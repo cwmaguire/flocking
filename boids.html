@@ -4,12 +4,16 @@
       function addBoid(){
         var canvas = document.getElementById("canvas1");
         var ctx = canvas.getContext("2d");
+        drawBoid(ctx, 80, 60, 20);
+      }
+
+      function drawBoid(ctx, x, y, r){
         ctx.fillStyle = "#000000";
         ctx.beginPath();
-        ctx.arc(100, 75, 50, 1.75 * Math.PI, 1.25 * Math.PI);
-        ctx.lineTo(64.8, 39),
-        ctx.lineTo(100, 9),
-        ctx.lineTo(135.7, 39),
+        ctx.arc(x, y, 50, 1.75 * Math.PI, 1.25 * Math.PI);
+        ctx.lineTo(x - 35.8, 0.8 * y),
+        ctx.lineTo(x, r * 0.6),
+        ctx.lineTo(x + 35.8, 0.8 * y),
         ctx.fill();
       }
     </script>
