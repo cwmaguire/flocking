@@ -1,13 +1,19 @@
 <html>
   <head>
     <script language="javascript">
+      var boids = [];
+
+      function go(){
+        setInterval(animateBoids, 1000);
+      }
+
+      function animateBoids(){
+
+      }
+
       function addBoid(){
         var canvas = document.getElementById("canvas1");
         var ctx = canvas.getContext("2d");
-        //drawBoid(ctx, 80, 100, 20);
-        //for(var i = 1; i < 7; i++){
-        //  drawBoid(ctx, (2 * i - 1) * 20, 200, i * 10);
-        //}
 
         drawBoids(ctx, 10, 40, 200, 10, 10);
       }
