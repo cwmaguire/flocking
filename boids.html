@@ -4,11 +4,59 @@
       var boids = [];
 
       function go(){
-        setInterval(animateBoids, 1000);
+        setInterval(function() {boids = animateBoids(boids, [])}, 1000);
       }
 
-      function animateBoids(){
+      function animateBoids(boids, newBoids){
+        if(boids.length > 0){
+          var newBoid = moveBoid(boids[0]);
+          animateBoid(boid);
+          var newBoids = newBoids.slice(0);
+          newBoids.push(newBoid);
+          animateBoids(boids.slice(1), newBoids);
+        }else{
+          return newBoids;
+        }
+      }
 
+      function moveBoid(boid){
+        var newVector = circleEdgesVector(boid);
+        var combinedVector = combineVectors(newVector, boid.vector);
+        var movedBoid = applyVector(boid, newVector);
+        return movedBoid;
+      }
+
+      function circleEdgesVector(boid){
+        return getRegion(boid).getVelocity();
+      }
+
+      function getRegion(w, h, x, y){
+        // concentric rings 1, 2, 3
+
+        var mid = {x : w / 2, y : h / 2};
+        var innerSquare = calcSquarePoints(w, h, 0.30);
+        var middleSquare = calcSquarePoints(2, h, 0.70);
+        //var columns = splitColumns(w, h, 0.15, 0.20, 0.30, 0.20, 0.15);
+        //var rows = splitRows(w, h, 0.15, 0.20, 0.30, 0.20, 0.15);
+        var columns = w, h, 0.15, 0.20, 0.30, 0.20, 0.15;
+        var rows = w, h, 0.15, 0.20, 0.30, 0.20, 0.15;
+        var regionCoords = regionCoords(w, h, x, y, columns, rows);
+        var regionsFuns = {[1, 1] : outTopLeft,
+                           [1, 2] : outMidLeft,
+                           [1, 3] : outMidLeft,
+                           [1, 4] : outMidLeft,
+                           [1, 5] : outBottomLeft,
+                           [2, 1] : outTopMiddle,
+                           [2, 2] : midTopLeft,
+                           [2, 3] : midMidLeft,
+                           [2, 4] : midBottomLeft,
+                           [2, 5] : outBottomMiddle,
+                           [3, 1] : outTopMiddle,
+                           [3, 2] : midTopMiddle,
+                           [3, 3] : center,
+                           [3, 4] : midBottomMiddle,
+                           [3, 5] : outBottomMiddle,
+        
       }
 
       function addBoid(){
