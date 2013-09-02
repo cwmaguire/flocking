@@ -38,7 +38,7 @@ function isFunction(fun){
 }
 
 function showTestResults(results){
-  testDiv = document.getElementById("testResults");
+  var testDiv = document.getElementById("testResults");
   if(results.length == 0){
     testDiv.innerHTML += "<br>All Tests Passed";
   }else{
@@ -72,7 +72,7 @@ function pointsEqual(point1, point2){
 }
 
 function pointToString(point){
-  return "{" + point.x + "," + point.y "}";
+  return "{" + point.x + "," + point.y + "}";
 }
 
 function randomInt(min, max){
@@ -80,5 +80,5 @@ function randomInt(min, max){
     max = min;
     min = 0;
   }
-  return Math.round(Math.random() * max);
+  return min + Math.round(Math.random() * (max - min));
 }
