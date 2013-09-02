@@ -1,11 +1,16 @@
 var arenaTests = [];
 
 function addTest(fun){
+  //alert("Pushing " + fun.toString());
   arenaTests.push(fun);
 }
 
-function getTests(){
-  return arenaTests;
+function saySomething(){
+  alert("Something");
+}
+
+function getArenaTests(){
+  return arenaTests.slice(0);
 }
 
 var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft],
@@ -24,8 +29,8 @@ function vector(point, dimensions){
 function regionCoords(point, dimensions, columnSizes, rowSizes){
   var actualColumns = sizes(dimensions.w, columnSizes);
   var actualRows = sizes(dimensions.h, rowSizes);
-  return {'x': regionRowOrColumn(point.x, 1, actualColumns);
-          'y': regionRowOrColumn(point.y, 1, actualRows)}
+  return {'x': regionRowOrColumn(point.x, 1, actualColumns),
+          'y': regionRowOrColumn(point.y, 1, actualRows)};
 }
 
 function percentsToEndPoints(size, percentages, startPoint, endPoints){
@@ -65,64 +70,85 @@ function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
 function outTopLeft(point){
   return {'x': point.x,
           'y': point.y + 5};
+}
 
 function outMidLeft(point){
   return {'x': point.x,
           'y': point.y + 5};
+}
 
 function outBottomLeft(point){
   return {'x': point.x + 5,
           'y': point.y};
+}
 
 function outTopMiddle(point){
   return {'x': point.x - 5,
           'y': point.y};
+}
 
 function midTopLeft(point){
   return {'x': point.x - 5,
           'y': point.y};
+}
 
 function midMidLeft(point){
   return {'x': point.x - 5,
           'y': point.y};
+}
 
 function midBottomLeft(point){
   return {'x': point.x,
           'y': point.y + 5};
+}
 
 function outBottomMiddle(point){
   return {'x': point.x + 5,
           'y': point.y};
+}
 
 function midTopMiddle(point){
   return {'x': point.x,
           'y': point.y - 5};
+}
 
 function center(point){
   return {'x': point.x,
           'y': point.y - 5};
+}
 
 function midBottomMiddle(point){
   return {'x': point.x,
           'y': point.y + 5};
+}
+
+function midTopRight(point){
+  return {'x': point.x,
+          'y': point.y - 5}
+}
 
 function midMidRight(point){
   return {'x': point.x + 5,
           'y': point.y};
+}
 
 function midBottomRight(point){
   return {'x': point.x + 5,
           'y': point.y};
+}
 
 function outTopRight(point){
   return {'x': point.x - 5,
           'y': point.y};
+}
 
 function outMidRight(point){
   return {'x': point.x,
           'y': point.y - 5};
+}
 
 function outBottomRight(point){
   return {'x': point.x,
           'y': point.y - 5};
+}
 
