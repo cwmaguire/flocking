@@ -50,7 +50,7 @@ function showTestFailures(div, failures){
   if(failures.length == 0){
     return;
   }
-  div.innerHTML += failures[0];
+  div.innerHTML += failures[0] + "<br>";
   showTestFailures(div, failures.slice(1));
 }
 
