@@ -14,7 +14,29 @@ function testVector(){
   var dimensions = {'w':200, 'h':200};
   var vectorTests = [vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
                      vectorTest({'x':0, 'y':31}, {'x':0, 'y':36}, dimensions),
-                     vectorTest({'x':0, 'y':71}, {'x':0, 'y':76}, dimensions)];
+                     vectorTest({'x':0, 'y':71}, {'x':0, 'y':76}, dimensions),
+                     vectorTest({'x':0, 'y':131}, {'x':0, 'y':136}, dimensions),
+                     vectorTest({'x':0, 'y':171}, {'x':5, 'y':171}, dimensions),
+                     vectorTest({'x':31, 'y':171}, {'x':36, 'y':171}, dimensions),
+                     vectorTest({'x':71, 'y':171}, {'x':71, 'y':176}, dimensions),
+                     vectorTest({'x':131, 'y':171}, {'x':136, 'y':176}, dimensions),
+                     vectorTest({'x':171, 'y':171}, {'x':171, 'y':166}, dimensions),
+                     vectorTest({'x':171, 'y':131}, {'x':171, 'y':126}, dimensions),
+                     vectorTest({'x':171, 'y':71}, {'x':171, 'y':66}, dimensions),
+                     vectorTest({'x':171, 'y':31}, {'x':171, 'y':26}, dimensions),
+                     vectorTest({'x':171, 'y':1}, {'x':166, 'y':1}, dimensions),
+                     vectorTest({'x':131, 'y':1}, {'x':126, 'y':1}, dimensions),
+                     vectorTest({'x':71, 'y':1}, {'x':65, 'y':1}, dimensions),
+                     vectorTest({'x':31, 'y':1}, {'x':25, 'y':1}, dimensions),
+                     vectorTest({'x':31, 'y':31}, {'x':25, 'y':31}, dimensions),
+                     vectorTest({'x':31, 'y':71}, {'x':25, 'y':71}, dimensions),
+                     vectorTest({'x':31, 'y':131}, {'x':31, 'y':136}, dimensions),
+                     vectorTest({'x':71, 'y':131}, {'x':71, 'y':136}, dimensions),
+                     vectorTest({'x':131, 'y':131}, {'x':136, 'y':131}, dimensions),
+                     vectorTest({'x':131, 'y':71}, {'x':136, 'y':71}, dimensions),
+                     vectorTest({'x':131, 'y':31}, {'x':136, 'y':25}, dimensions),
+                     vectorTest({'x':71, 'y':31}, {'x':65, 'y':31}, dimensions),
+                     vectorTest({'x':71, 'y':71}, {'x':71, 'y':65}, dimensions)];
   return testVectorPoints(vectorTests);
 }
 addTest(testVector);
@@ -30,11 +52,11 @@ function testVectorPoints(vectorTests){
     return true;
   }
   var vectorTest = vectorTests[0];
-  if(!pointsEqual(vectorTest.endPoint,
-                  vector(vectorTest.startPoint,
-                         vectorTest.dimensions))){
+  var newPoint = vector(vectorTest.startPoint, vectorTest.dimensions);
+  if(!pointsEqual(vectorTest.endPoint, newPoint)){
     return "Point " + pointToString(vectorTest.startPoint) +
-           "should have moved down to " + pointToString(vectorTest.endPoint);
+           " should have moved to " + pointToString(vectorTest.endPoint) +
+           " instead of " + pointToString(newPoint);
   }else{
     return testVectorPoints(vectorTests.slice(1));
   }
