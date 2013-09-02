@@ -67,7 +67,7 @@ function arraysEqual(array1, array2){
 }
 
 function pointsEqual(point1, point2){
-  return point1.x = point2.x && point1.y = point2.y;
+  return point1.x == point2.x && point1.y == point2.y;
 }
 
 function randomInt(min, max){
