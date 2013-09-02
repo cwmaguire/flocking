@@ -17,15 +17,25 @@ var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft
                   [outTopRight, outMidRight, outMidRight, outMidRight, outBottomRight]];
 
 function vector(point, dimensions){
-  var columnSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
-  var rowSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
-  var regionCoords = regionCoords(point, dimensions, columnSizes, rowSizes);
-  return regionFun[regionCoords.x][regionCoords.y].call(point);
+  var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
+  var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
+  var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
+  return regionFuns[regionPoint.x][regionPoint.y].call(null, point);
 }
 
-function regionCoords(point, dimensions, columnSizes, rowSizes){
-  var columnEndPoints = percentsToEndPoints(dimensions.w, columnSizes);
-  var rowEndPoints = percentsToEndPoints(dimensions.h, rowSizes);
+function testVector(){
+  var dimensions = {'w':200, 'h':200};
+  if(!pointsEqual({'x':0, 'y':5}, vector({'x':0, 'y':0}, dimensions))){
+    return "Point should have moved down to 0,5";
+  }else{
+    return true;
+  }
+}
+addTest(testVector);
+
+function regionCoords(point, dimensions, columnPercentages, rowPercentages){
+  var columnEndPoints = percentsToEndPoints(dimensions.w, columnPercentages);
+  var rowEndPoints = percentsToEndPoints(dimensions.h, rowPercentages);
   return {'x': regionRowOrColumn(point.x, columnEndPoints),
           'y': regionRowOrColumn(point.y, rowEndPoints)};
 }
