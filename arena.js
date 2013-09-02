@@ -25,13 +25,39 @@ function vector(point, dimensions){
 
 function testVector(){
   var dimensions = {'w':200, 'h':200};
+  var vectorTests = [vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
+                     vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
+                     vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
+  testVectorPoints(vectorTests);
+}
+
   if(!pointsEqual({'x':0, 'y':5}, vector({'x':0, 'y':0}, dimensions))){
-    return "Point should have moved down to 0,5";
-  }else{
-    return true;
-  }
 }
 addTest(testVector);
+
+function vectorTest(startPoint, endPoint, dimensions){
+  {'startPoint':startPoint,
+   'endPoint':endPoint,
+   'dimensions': dimensions};
+}
+
+
+function testVectorPoints(vectorTests){
+  if(vectorTests.length == 0){
+    return true;
+  }
+  var vectorTest = vectorTests[0];
+  if(!pointsEqual(vectorTest.startPoint,
+                  vector(vectorTest.endPoint,
+                         vectorTest.dimensions))){
+    return "Point " + pointToString(vectorTest.startPoint) +
+           "should have moved down to " + pointToString(vectorTest.endPoint);
+  }else{
+    testVectorPoints(vectorTests.slice(1));
+  }
+}
+
+[startPoint, regionPoint, dimensions]
 
 function regionCoords(point, dimensions, columnPercentages, rowPercentages){
   var columnEndPoints = percentsToEndPoints(dimensions.w, columnPercentages);
