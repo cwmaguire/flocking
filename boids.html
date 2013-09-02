@@ -1,5 +1,6 @@
 <html>
   <head>
+    <script src="arena.js"></script>
     <script language="javascript">
       var boids = [];
 
@@ -24,65 +25,6 @@
         var combinedVector = combineVectors(newVector, boid.vector);
         var movedBoid = applyVector(boid, newVector);
         return movedBoid;
-      }
-
-      function circleEdgesVector(boid){
-        return getRegionFun(boid).call(null, boid);
-      }
-
-      function getRegion(w, h, x, y){
-        // concentric rings 1, 2, 3
-
-        var mid = {x : w / 2, y : h / 2};
-        var innerSquare = calcSquarePoints(w, h, 0.30);
-        var middleSquare = calcSquarePoints(2, h, 0.70);
-        //var columns = splitColumns(w, h, 0.15, 0.20, 0.30, 0.20, 0.15);
-        //var rows = splitRows(w, h, 0.15, 0.20, 0.30, 0.20, 0.15);
-        var columnSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
-        var rowSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
-        var regionCoords = regionCoords(w, h, x, y, columnSizes, rowSizes);
-        var regionFuns = [[outTopLeft,
-                            outMidLeft,
-                            outMidLeft,
-                            outMidLeft,
-                            outBottomLeft],
-                           [outTopMiddle,
-                            midTopLeft,
-                            midMidLeft,
-                            midBottomLeft,
-                            outBottomMiddle],
-                           [outTopMiddle,
-                            midTopMiddle,
-                            center,
-                            midBottomMiddle,
-                            outBottomMiddle],
-                           [outTopMiddle,
-                            midTopRight,
-                            center,
-                            midBottomRight,
-                            outBottomMiddle],
-                           [outTopRight,
-                            outMidRight,
-                            outMidRight,
-                            outMidRight,
-                            outBottomRight]];
-        return regionFun[regionCoords.x][regionCoords.y];
-
-      }
-
-      function regionCoords(x, y, w, h, columnSizes, rowSizes){
-        var actualColumns = columnSizes(w, columnSizes);
-        var actualRows = rowSizes(h, rowSizes);
-        return {'x', getRegionColumn(x, w, actualColumns);
-                'y', getRegionRow(y, h, actualRows)}
-      }
-
-      function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
-        if(xOrY < rowOrColSizes[0]){
-          return rowOrColNumber;
-        }else{
-          return regionRowOrColumn(xOrY, rowOrColNumber + 1, rowOrColSizes.slice(1));
-        }
       }
 
       function addBoid(){
