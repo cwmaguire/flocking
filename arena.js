@@ -1,45 +1,22 @@
 
-function vector(boid){
-  return getRegionFun(boid).call(null, boid);
-}
+var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft],
+                  [outTopMiddle, midTopLeft, midMidLeft, midBottomLeft, outBottomMiddle],
+                  [outTopMiddle, midTopMiddle, center, midBottomMiddle, outBottomMiddle],
+                  [outTopMiddle, midTopRight, midMidRight, midBottomRight, outBottomMiddle],
+                  [outTopRight, outMidRight, outMidRight, outMidRight, outBottomRight]];
 
-function getRegion(w, h, x, y){
+function vector(point, dimensions){
   var columnSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowSizes = [0.15, 0.20, 0.30, 0.20, 0.15];
-  var regionCoords = regionCoords(w, h, x, y, columnSizes, rowSizes);
-  var regionFuns = [[outTopLeft,
-                     outMidLeft,
-                     outMidLeft,
-                     outMidLeft,
-                     outBottomLeft],
-                    [outTopMiddle,
-                      midTopLeft,
-                      midMidLeft,
-                      midBottomLeft,
-                      outBottomMiddle],
-                     [outTopMiddle,
-                      midTopMiddle,
-                      center,
-                      midBottomMiddle,
-                      outBottomMiddle],
-                     [outTopMiddle,
-                      midTopRight,
-                      center,
-                      midBottomRight,
-                      outBottomMiddle],
-                     [outTopRight,
-                      outMidRight,
-                      outMidRight,
-                      outMidRight,
-                      outBottomRight]];
-  return regionFun[regionCoords.x][regionCoords.y];
+  var regionCoords = regionCoords(point, dimensions, columnSizes, rowSizes);
+  return regionFun[regionCoords.x][regionCoords.y].call(point);
 }
 
-function regionCoords(x, y, w, h, columnSizes, rowSizes){
-  var actualColumns = columnSizes(w, columnSizes);
-  var actualRows = rowSizes(h, rowSizes);
-  return {'x', regionRowOrColumn(x, 1, actualColumns);
-    'y', regionRowOrColumn(y, 1, actualRows)}
+function regionCoords(point, dimensions, columnSizes, rowSizes){
+  var actualColumns = columnSizes(dimensions.w, columnSizes);
+  var actualRows = rowSizes(dimensions.h, rowSizes);
+  return {'x', regionRowOrColumn(point.x, 1, actualColumns);
+          'y', regionRowOrColumn(point.y, 1, actualRows)}
 }
 
 function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
@@ -50,26 +27,67 @@ function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
   }
 }
 
-function addBoid(){
-  var canvas = document.getElementById("canvas1");
-  var ctx = canvas.getContext("2d");
+function outTopLeft(point){
+  return {'x': point.x,
+          'y': point.y + 5};
 
-  drawBoids(ctx, 10, 40, 200, 10, 10);
-}
+function outMidLeft(point){
+  return {'x': point.x,
+          'y': point.y + 5};
 
-function drawBoids(ctx, count, x, y, radius, radiusGrowth){
-  if(count > 1){
-    drawBoid(ctx, x + radius + 10, y, radius);
-    drawBoids(ctx, count - 1, x + (radius * 2) + 20, y, radius + radiusGrowth, radiusGrowth);
-  }
-}
+function outBottomLeft(point){
+  return {'x': point.x + 5,
+          'y': point.y};
 
-function drawBoid(ctx, x, y, r){
-  ctx.fillStyle = "#000000";
-  ctx.beginPath();
-  ctx.arc(x, y, r, 1.75 * Math.PI, 1.25 * Math.PI);
-  ctx.lineTo(x - r * 0.7, y - (0.6 * r)),
-  ctx.lineTo(x, y - (r * 1.8)),
-  ctx.lineTo(x + r * 0.7, y - (0.6 * r)),
-  ctx.fill();
-}
+function outTopMiddle(point){
+  return {'x': point.x - 5,
+          'y': point.y};
+
+function midTopLeft(point){
+  return {'x': point.x - 5,
+          'y': point.y};
+
+function midMidLeft(point){
+  return {'x': point.x - 5,
+          'y': point.y};
+
+function midBottomLeft(point){
+  return {'x': point.x,
+          'y': point.y + 5};
+
+function outBottomMiddle(point){
+  return {'x': point.x + 5,
+          'y': point.y};
+
+function midTopMiddle(point){
+  return {'x': point.x,
+          'y': point.y - 5};
+
+function center(point){
+  return {'x': point.x,
+          'y': point.y - 5};
+
+function midBottomMiddle(point){
+  return {'x': point.x,
+          'y': point.y + 5};
+
+function midMidRight(point){
+  return {'x': point.x + 5,
+          'y': point.y};
+
+function midBottomRight(point){
+  return {'x': point.x + 5,
+          'y': point.y};
+
+function outTopRight(point){
+  return {'x': point.x - 5,
+          'y': point.y};
+
+function outMidRight(point){
+  return {'x': point.x,
+          'y': point.y - 5};
+
+function outBottomRight(point){
+  return {'x': point.x,
+          'y': point.y - 5};
+
