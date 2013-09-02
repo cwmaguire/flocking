@@ -41,22 +41,32 @@
         var columns = w, h, 0.15, 0.20, 0.30, 0.20, 0.15;
         var rows = w, h, 0.15, 0.20, 0.30, 0.20, 0.15;
         var regionCoords = regionCoords(w, h, x, y, columns, rows);
-        var regionsFuns = {[1, 1] : outTopLeft,
-                           [1, 2] : outMidLeft,
-                           [1, 3] : outMidLeft,
-                           [1, 4] : outMidLeft,
-                           [1, 5] : outBottomLeft,
-                           [2, 1] : outTopMiddle,
-                           [2, 2] : midTopLeft,
-                           [2, 3] : midMidLeft,
-                           [2, 4] : midBottomLeft,
-                           [2, 5] : outBottomMiddle,
-                           [3, 1] : outTopMiddle,
-                           [3, 2] : midTopMiddle,
-                           [3, 3] : center,
-                           [3, 4] : midBottomMiddle,
-                           [3, 5] : outBottomMiddle,
-        
+        var regionsFuns = [[outTopLeft,
+                            outMidLeft,
+                            outMidLeft,
+                            outMidLeft,
+                            outBottomLeft],
+                           [outTopMiddle,
+                            midTopLeft,
+                            midMidLeft,
+                            midBottomLeft,
+                            outBottomMiddle],
+                           [outTopMiddle,
+                            midTopMiddle,
+                            center,
+                            midBottomMiddle,
+                            outBottomMiddle],
+                           [outTopMiddle,
+                            midTopRight,
+                            center,
+                            midBottomRight,
+                            outBottomMiddle],
+                           [outTopRight,
+                            outMidRight,
+                            outMidRight,
+                            outMidRight,
+                            outBottomRight]];
+        regionFun = regionsFun
       }
 
       function addBoid(){
