@@ -54,13 +54,41 @@ function testPercentsToEndPoints(){
 }
 addTest(testPercentsToEndPoints);
 
-function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
+function regionRowOrColumn(xOrY, rowOrColSizes, rowOrColNum){
+  if(rowOrColSizes.length == 0){
+    return -1;
+  }
+  if(rowOrColNum === undefined){
+    rowOrColNum = 0;
+  }
   if(xOrY < rowOrColSizes[0]){
-    return rowOrColNumber;
+    return rowOrColNum;
   }else{
-    return regionRowOrColumn(xOrY, rowOrColNumber + 1, rowOrColSizes.slice(1));
+    return regionRowOrColumn(xOrY, rowOrColSizes.slice(1), rowOrColNum + 1);
   }
 }
+
+function testRegionRowOrColumn(){
+  var size1 = randomInt(10, 100);
+  var size2 = size1 + randomInt(10, 100);
+  var size3 = size2 + randomInt(10, 100);
+  var sizes = [size1, size2, size3];
+  alert("Sizes: [" + sizes + "]");
+  var testXOrY1 = Math.round((size1) / 2);
+  var testXOrY2 = Math.round((size1 + size2) / 2);
+  var testXOrY3 = Math.round((size2 + size3) / 2);
+  if(regionRowOrColumn(testXOrY1, sizes) != 0){
+    return "testRegionRowOrColumn should return 0 for the row/column if the x/y is less than the first size";
+  }
+  if(regionRowOrColumn(testXOrY2, sizes) != 1){
+    return "testRegionRowOrColumn should return 1 for the row/column if the x/y is less than the second size";
+  }
+  if(regionRowOrColumn(testXOrY3, sizes) != 2){
+    return "testRegionRowOrColumn should return 2 for the row/column if the x/y is less than the third size";
+  }
+  return true;
+}
+addTest(testRegionRowOrColumn);
 
 //  _________
 // |Out_<__  |
@@ -112,15 +140,19 @@ function center(point){ return up(point); }
 function up(point){
   return {'x': point.x,
           'y': point.y - 5};
+}
 
 function down(point){
   return {'x': point.x,
           'y': point.y + 5};
+}
 
 function left(point){
   return {'x': point.x - 5,
           'y': point.y};
+}
 
 function right(point){
   return {'x': point.x + 5,
           'y': point.y};
+}
