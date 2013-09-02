@@ -19,10 +19,36 @@
           results = [];
         }
         if(tests.length == 0){
-          return results;
+          showTestResults(results);
         }
-        tests[0].call(null);
-        return runTests(tests.slice(1));
+        try{
+          result = tests[0].call(null);
+        }catch(err){
+          result = tests[0].toString().split("(") + "caused error: " + err.message;
+        }
+        var newResults = results.slice(0);
+        if(result != true){
+          newResults.push(result);
+        }
+        return runTests(tests.slice(1), newResults);
+      }
+
+      function showtestResults(results){
+        testDiv = document.getElementById("testResults");
+        if(results.length == 0){
+          testDiv.innerHTML = "All Tests Passed";
+        }else{
+          testDiv.innerHTML = "Test failures:<br>";
+          showTestsFailures(testDiv, results);
+        }
+      }
+
+      function showTestFailures(div, failures){
+        if(failures.length == 0){
+          return;
+        }
+        div.innerHTML += failures[0];
+        showTestFailures(div, failures.slice(1));
       }
 
       function go(){
@@ -75,6 +101,7 @@
   </head>
   <!--<body onload="(function() {alert('Hey!')}).call(null)">-->
   <body onload="runTests()">
+    <div id="testResults">&nblt;no test results&nbgt;<div>
     Text
     <button id="addBoid" onclick="addBoid()">Add Boid</button>
     <br>
