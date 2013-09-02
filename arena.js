@@ -62,88 +62,65 @@ function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
   }
 }
 
-function outTopLeft(point){
-  return {'x': point.x,
-          'y': point.y + 5};
-}
+//  _________
+// |Out_<__  |
+// | |M|_|_| | Mid
+// | |_|C|_|^| Center
+// | |_|_|_| |
+// |____>____| Arrows show flow direction as
+//             well as how the functions are laid out
 
-function outMidLeft(point){
-  return {'x': point.x,
-          'y': point.y + 5};
-}
+// Outside box, from top left counter-clockwise
+// to top middle
+function outTopLeft(point){ return down(point); }
 
-function outBottomLeft(point){
-  return {'x': point.x + 5,
-          'y': point.y};
-}
+function outMidLeft(point){ return down(point); }
 
-function outTopMiddle(point){
-  return {'x': point.x - 5,
-          'y': point.y};
-}
+function outBottomLeft(point){ return right(point); }
 
-function midTopLeft(point){
-  return {'x': point.x - 5,
-          'y': point.y};
-}
+function outBottomMiddle(point){ return right(point); }
 
-function midMidLeft(point){
-  return {'x': point.x - 5,
-          'y': point.y};
-}
+function outBottomRight(point){ return up(point); }
 
-function midBottomLeft(point){
-  return {'x': point.x,
-          'y': point.y + 5};
-}
+function outMidRight(point){ return up(point); }
 
-function outBottomMiddle(point){
-  return {'x': point.x + 5,
-          'y': point.y};
-}
+function outTopRight(point){ return left(point); }
 
-function midTopMiddle(point){
-  return {'x': point.x,
-          'y': point.y - 5};
-}
+function outTopMiddle(point){ return left(point); }
 
-function center(point){
-  return {'x': point.x,
-          'y': point.y - 5};
-}
+// Middle box, from top left counter-clockwise
+// to top middle
+function midTopLeft(point){ return left(point); }
 
-function midBottomMiddle(point){
-  return {'x': point.x,
-          'y': point.y + 5};
-}
+function midMidLeft(point){ return left(point); }
 
-function midTopRight(point){
-  return {'x': point.x,
-          'y': point.y - 5}
-}
+function midBottomLeft(point){ return down(point); }
 
-function midMidRight(point){
-  return {'x': point.x + 5,
-          'y': point.y};
-}
+function midBottomMiddle(point){ return down(point); }
 
-function midBottomRight(point){
-  return {'x': point.x + 5,
-          'y': point.y};
-}
+function midBottomRight(point){ return right(point); }
 
-function outTopRight(point){
-  return {'x': point.x - 5,
-          'y': point.y};
-}
+function midMidRight(point){ return right(point); }
 
-function outMidRight(point){
+function midTopRight(point){ return up(point); }
+
+function midTopMiddle(point){ return up(point); }
+
+// The center box
+function center(point){ return up(point); }
+
+function up(point){
   return {'x': point.x,
           'y': point.y - 5};
-}
 
-function outBottomRight(point){
+function down(point){
   return {'x': point.x,
-          'y': point.y - 5};
-}
+          'y': point.y + 5};
 
+function left(point){
+  return {'x': point.x - 5,
+          'y': point.y};
+
+function right(point){
+  return {'x': point.x + 5,
+          'y': point.y};
