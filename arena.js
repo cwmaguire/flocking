@@ -1,3 +1,5 @@
+"use strict";
+
 var arenaTests = [];
 
 function addTest(fun){
@@ -22,11 +24,26 @@ function vector(point, dimensions){
 }
 
 function regionCoords(point, dimensions, columnSizes, rowSizes){
-  var actualColumns = sizes(dimensions.w, columnSizes);
-  var actualRows = sizes(dimensions.h, rowSizes);
-  return {'x': regionRowOrColumn(point.x, 1, actualColumns),
-          'y': regionRowOrColumn(point.y, 1, actualRows)};
+  var columnEndPoints = percentsToEndPoints(dimensions.w, columnSizes);
+  var rowEndPoints = percentsToEndPoints(dimensions.h, rowSizes);
+  return {'x': regionRowOrColumn(point.x, columnEndPoints),
+          'y': regionRowOrColumn(point.y, rowEndPoints)};
 }
+
+function testRegionCoords(){
+  var columnPercentages = [0.1, 0.2];
+  var rowPercentages = [0.5, 0.5];
+  var dimensions = {'w': 100, 'h': 100};
+  var point = {'x':20, 'y':51};
+  var expectedRowColumnPoint = {'x':1, 'y':1};
+  var rowColumnPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
+  if(!pointsEqual(expectedRowColumnPoint, rowColumnPoint)){
+    return "Row/Column point should be {1,1}, not " + rowColumnPoint.x + "," + rowColumnPoint.y;
+  }else{
+    return true;
+  }
+}
+addTest(testRegionCoords);
 
 function sizes(totalSize, percentages){
   if(percentages.length == 1){
@@ -61,7 +78,7 @@ function percentsToEndPoints(size, percentages, startPoint, endPoints){
       endPoints = [];
     }
     var endPoint = percentages[0] * size + startPoint;
-    newEndPoints = endPoints.slice(0);
+    var newEndPoints = endPoints.slice(0);
     newEndPoints.push(endPoint);
     return percentsToEndPoints(size, percentages.slice(1), endPoint, newEndPoints);
   }else{
@@ -78,17 +95,17 @@ function testPercentsToEndPoints(){
 }
 addTest(testPercentsToEndPoints);
 
-function regionRowOrColumn(xOrY, rowOrColSizes, rowOrColNum){
-  if(rowOrColSizes.length == 0){
+function regionRowOrColumn(xOrY, rowOrColEndPoints, rowOrColNum){
+  if(rowOrColEndPoints.length == 0){
     return -1;
   }
   if(rowOrColNum === undefined){
     rowOrColNum = 0;
   }
-  if(xOrY < rowOrColSizes[0]){
+  if(xOrY < rowOrColEndPoints[0]){
     return rowOrColNum;
   }else{
-    return regionRowOrColumn(xOrY, rowOrColSizes.slice(1), rowOrColNum + 1);
+    return regionRowOrColumn(xOrY, rowOrColEndPoints.slice(1), rowOrColNum + 1);
   }
 }
 
