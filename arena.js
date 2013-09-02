@@ -1,3 +1,12 @@
+var arenaTests = [];
+
+function addTest(fun){
+  arenaTests.push(fun);
+}
+
+function getTests(){
+  return arenaTests;
+}
 
 var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft],
                   [outTopMiddle, midTopLeft, midMidLeft, midBottomLeft, outBottomMiddle],
@@ -13,11 +22,37 @@ function vector(point, dimensions){
 }
 
 function regionCoords(point, dimensions, columnSizes, rowSizes){
-  var actualColumns = columnSizes(dimensions.w, columnSizes);
-  var actualRows = rowSizes(dimensions.h, rowSizes);
-  return {'x', regionRowOrColumn(point.x, 1, actualColumns);
-          'y', regionRowOrColumn(point.y, 1, actualRows)}
+  var actualColumns = sizes(dimensions.w, columnSizes);
+  var actualRows = sizes(dimensions.h, rowSizes);
+  return {'x': regionRowOrColumn(point.x, 1, actualColumns);
+          'y': regionRowOrColumn(point.y, 1, actualRows)}
 }
+
+function percentsToEndPoints(size, percentages, startPoint, endPoints){
+  if(percentages.length > 0){
+    if(startPoint === undefined){
+      startPoint = 0;
+    }
+    if(endPoints === undefined){
+      endPoints = [];
+    }
+    endPoint = percentages[0] * size + startPoint;
+    newEndPoints = endPoints.slice(0);
+    newEndPoints.push(endPoint);
+    return endPoints(size, percentages.slice(1), endPoint, newEndPoints);
+  }else{
+    return endPoints;
+  }
+}
+
+function testPercentsToEndPoints(){
+  if(percentsToEndPoints(20, [0.1, 0.2, 0.3, 0.4]) != [10.0, 30.0, 60.0, 100.0]){
+    return "percentsToEndPoints failed";
+  }else{
+    return true;
+  }
+}
+addTest(testPercentsToEndPoints);
 
 function regionRowOrColumn(xOrY, rowOrColNum, rowOrColSizes){
   if(xOrY < rowOrColSizes[0]){

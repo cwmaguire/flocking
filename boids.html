@@ -2,7 +2,28 @@
   <head>
     <script src="arena.js"></script>
     <script language="javascript">
+      var allTests = [];
       var boids = [];
+
+      getTests(){
+        tests = [];
+        tests.push(arenaTests());
+        return allTests;
+      }
+
+      runTests(tests, results){
+        if(tests === undefined){
+          tests = getTests;
+        }
+        if(results === undefined){
+          results = [];
+        }
+        if(tests.length == 0){
+          return results;
+        }
+        tests[0].call(null);
+        return runTests(tests.slice(1));
+      }
 
       function go(){
         setInterval(function() {boids = animateBoids(boids, [])}, 1000);
@@ -53,7 +74,7 @@
     </script>
   </head>
   <!--<body onload="(function() {alert('Hey!')}).call(null)">-->
-  <body>
+  <body onload="runTests()">
     Text
     <button id="addBoid" onclick="addBoid()">Add Boid</button>
     <br>
