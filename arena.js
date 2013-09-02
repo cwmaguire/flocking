@@ -1,12 +1,7 @@
 var arenaTests = [];
 
 function addTest(fun){
-  //alert("Pushing " + fun.toString());
   arenaTests.push(fun);
-}
-
-function saySomething(){
-  alert("Something");
 }
 
 function getArenaTests(){
@@ -41,17 +36,17 @@ function percentsToEndPoints(size, percentages, startPoint, endPoints){
     if(endPoints === undefined){
       endPoints = [];
     }
-    endPoint = percentages[0] * size + startPoint;
+    var endPoint = percentages[0] * size + startPoint;
     newEndPoints = endPoints.slice(0);
     newEndPoints.push(endPoint);
-    return endPoints(size, percentages.slice(1), endPoint, newEndPoints);
+    return percentsToEndPoints(size, percentages.slice(1), endPoint, newEndPoints);
   }else{
     return endPoints;
   }
 }
 
 function testPercentsToEndPoints(){
-  if(percentsToEndPoints(20, [0.1, 0.2, 0.3, 0.4]) != [10.0, 30.0, 60.0, 100.0]){
+  if(!arraysEqual(percentsToEndPoints(20, [0.1, 0.2, 0.3, 0.4]), [2, 6, 12, 20])){
     return "percentsToEndPoints failed";
   }else{
     return true;
