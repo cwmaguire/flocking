@@ -26,38 +26,32 @@ function vector(point, dimensions){
 function testVector(){
   var dimensions = {'w':200, 'h':200};
   var vectorTests = [vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
-                     vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
-                     vectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
-  testVectorPoints(vectorTests);
-}
-
-  if(!pointsEqual({'x':0, 'y':5}, vector({'x':0, 'y':0}, dimensions))){
+                     vectorTest({'x':0, 'y':31}, {'x':0, 'y':36}, dimensions),
+                     vectorTest({'x':0, 'y':71}, {'x':0, 'y':76}, dimensions)];
+  return testVectorPoints(vectorTests);
 }
 addTest(testVector);
 
 function vectorTest(startPoint, endPoint, dimensions){
-  {'startPoint':startPoint,
-   'endPoint':endPoint,
-   'dimensions': dimensions};
+  return {'startPoint':startPoint,
+          'endPoint':endPoint,
+          'dimensions': dimensions};
 }
-
 
 function testVectorPoints(vectorTests){
   if(vectorTests.length == 0){
     return true;
   }
   var vectorTest = vectorTests[0];
-  if(!pointsEqual(vectorTest.startPoint,
-                  vector(vectorTest.endPoint,
+  if(!pointsEqual(vectorTest.endPoint,
+                  vector(vectorTest.startPoint,
                          vectorTest.dimensions))){
     return "Point " + pointToString(vectorTest.startPoint) +
            "should have moved down to " + pointToString(vectorTest.endPoint);
   }else{
-    testVectorPoints(vectorTests.slice(1));
+    return testVectorPoints(vectorTests.slice(1));
   }
 }
-
-[startPoint, regionPoint, dimensions]
 
 function regionCoords(point, dimensions, columnPercentages, rowPercentages){
   var columnEndPoints = percentsToEndPoints(dimensions.w, columnPercentages);
@@ -153,14 +147,26 @@ function testRegionRowOrColumn(){
   var testXOrY1 = Math.round((size1) / 2);
   var testXOrY2 = Math.round((size1 + size2) / 2);
   var testXOrY3 = Math.round((size2 + size3) / 2);
-  if(regionRowOrColumn(testXOrY1, sizes) != 0){
-    return "testRegionRowOrColumn should return 0 for the row/column if the x/y is less than the first size";
+  var rowOrColumn1 = regionRowOrColumn(testXOrY1, sizes);
+  var rowOrColumn2 = regionRowOrColumn(testXOrY2, sizes);
+  var rowOrColumn3 = regionRowOrColumn(testXOrY3, sizes);
+  if(rowOrColumn1 != 0){
+    return "testRegionRowOrColumn should return 0 instead of " + rowOrColumn1 +
+           " for the row/column if the x/y is less than the first size;<br>" +
+           "xOrY is " + testXOrY1 + ", size1 = " + size1 +
+           ", size2 = " + size2 + ", size3 = " + size3;
   }
-  if(regionRowOrColumn(testXOrY2, sizes) != 1){
-    return "testRegionRowOrColumn should return 1 for the row/column if the x/y is less than the second size";
+  if(rowOrColumn2 != 1){
+    return "testRegionRowOrColumn should return 1 instead of " + rowOrColumn2 +
+           " for the row/column if the x/y is less than the second size;<br>" +
+           "xOrY is " + testXOrY2 + ", size1 = " + size1 +
+           ", size2 = " + size2 + ", size3 = " + size3;
   }
-  if(regionRowOrColumn(testXOrY3, sizes) != 2){
-    return "testRegionRowOrColumn should return 2 for the row/column if the x/y is less than the third size";
+  if(rowOrColumn3 != 2){
+    return "testRegionRowOrColumn should return 2 instead of " + rowOrColumn3 +
+           " for the row/column if the x/y is less than the second size;<br>" +
+           "xOrY is " + testXOrY3 + ", size1 = " + size1 +
+           ", size2 = " + size2 + ", size3 = " + size3;
   }
   return true;
 }
