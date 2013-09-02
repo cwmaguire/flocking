@@ -28,6 +28,30 @@ function regionCoords(point, dimensions, columnSizes, rowSizes){
           'y': regionRowOrColumn(point.y, 1, actualRows)};
 }
 
+function sizes(totalSize, percentages){
+  if(percentages.length == 1){
+    var lastSize = Math.round(totalSize * percentages[0]);
+    return [lastSize];
+  }
+  var restSizes = sizes(totalSize, percentages.slice(1)).slice(0);
+  restSizes.unshift(Math.round(totalSize * percentages[0]));
+  return restSizes;
+}
+
+function testSizes(){
+  var percentages = [0.1, 0.2, 0.3, 0.4];
+  var totalSize = 100;
+  var expectedSizes = [10, 20, 30, 40];
+  var actualSizes = sizes(totalSize, percentages);
+
+  if(!arraysEqual(expectedSizes, actualSizes)){
+    return "sizes should return [10, 20, 30, 40]";
+  }else{
+    return true;
+  }
+}
+addTest(testSizes);
+
 function percentsToEndPoints(size, percentages, startPoint, endPoints){
   if(percentages.length > 0){
     if(startPoint === undefined){
@@ -73,7 +97,6 @@ function testRegionRowOrColumn(){
   var size2 = size1 + randomInt(10, 100);
   var size3 = size2 + randomInt(10, 100);
   var sizes = [size1, size2, size3];
-  alert("Sizes: [" + sizes + "]");
   var testXOrY1 = Math.round((size1) / 2);
   var testXOrY2 = Math.round((size1 + size2) / 2);
   var testXOrY3 = Math.round((size2 + size3) / 2);
