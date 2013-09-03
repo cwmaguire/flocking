@@ -10,7 +10,8 @@ function vector(point, dimensions){
   var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
-  return regionFuns[regionPoint.y][regionPoint.x].call(null, point);
+  var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
+  return regionFuns[regionPoint.x][regionPoint.y].call(null, point);
 }
 
 
