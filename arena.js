@@ -6,7 +6,7 @@ var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft
                   [outTopMiddle, midTopRight, midMidRight, midBottomRight, outBottomMiddle],
                   [outTopRight, outMidRight, outMidRight, outMidRight, outBottomRight]];
 
-function vector(point, dimensions){
+function arenaVector(point, dimensions){
   var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
