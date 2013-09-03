@@ -4,20 +4,29 @@
     <script type="text/javascript" src="arena.js"></script>
     <script type="text/javascript" src="tests/arena_tests.js"></script>
     <script type="text/javascript" src="boids.js"></script>
-    <script language="javascript">
-      var allTests = [];
+    <script type="text/javascript">
       var boids = [];
 
       function go(){
-        setInterval(function() {boids = animateBoids(boids, [])}, 1000);
+        setInterval(function() {boids = animate(boids)}, 40);
+      }
+
+      function canvasClick(event){
+        var canvas = document.getElementById("canvas1");
+        var x = event.pageX - canvas.offsetLeft;
+        var y = event.pageY - canvas.offsetTop;
+        addBoid({'x': x, 'y': y});
       }
     </script>
   </head>
   <body onload="runTests();">
-    <div id="testResults">&lt;no test results&gt;<div>
-    Text
-    <button id="addBoid" onclick="addBoid()">Add Boid</button>
+    <div id="testResults">&lt;no test results&gt;</div>
     <br>
-    <canvas id="canvas1" width="600" height="600"></canvas>
+    Text
+    <br>
+    <button id="addBoid" onclick="addBoid()">Add Boid</button>
+    <button id="addBoid" onclick="go()">Go!</button>
+    <br>
+    <canvas id="canvas1" width="600" height="600" style="border:1px solid black;" onclick="canvasClick(event);"></canvas>
   </body>
 </html>
