@@ -61,7 +61,7 @@ function copyBoid(boid){
 }
 
 function addBoid(point){
-  boids.push({'location': point, 'radius': 40});
+  boids.push({'location': point, 'radius': 10});
 }
 
 function drawBoid(ctx, boid){
