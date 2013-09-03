@@ -5,5 +5,7 @@ Trying out ideas from "Artificial Intelligence for Games" ... but mostly just pl
 
 What I'd like to do is use an HTML5 canvas to draw some boids flocking.
 
-http://youtu.be/mhMBWtL0bqM - Demo 1
-http://youtu.be/OPuYYLEyz-A - Code Walkthrough 1
+Videos:
+
+[Demo 1](http://youtu.be/mhMBWtL0bqM)
+[Code Walkthrough](http://youtu.be/OPuYYLEyz-A)
