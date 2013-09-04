@@ -1,25 +1,17 @@
 function animate(boids){
   var canvas = document.getElementById("canvas1");
   var ctx = canvas.getContext("2d");
-  //alert(ctx);
-  //ctx.fillStyle = "#0000A0";
-  //ctx.fillStyle = "#000000";
-  //ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   return animateBoids(ctx, boids, []);
 }
 
-function animateBoids(ctx, boids, newBoids){
-  //alert('animating ' + boids.length + ' boids.');
+function animateBoids(ctx, velocity, boids, newBoids){
   if(boids.length > 0){
 
-    //alert("boids.length > 0");
-    var newBoid = moveBoid(boids[0]);
-    //alert("boids[0].location.x is: " + boids[0].location.x);
-    //alert("boids[0].location is: " + boids[0].location);
-    //alert("newBoid.location is: " + newBoid.location);
-    //alert("newBoid.location.x is: " + newBoid.location.x);
+    var newBoid = moveBoid(boids[0],
+                           boids.concat(newBoids),
+                           velocity);
     drawBoid(ctx, newBoid);
 
     var newBoids = newBoids.slice(0);
@@ -30,13 +22,29 @@ function animateBoids(ctx, boids, newBoids){
   }
 }
 
-function moveBoid(boid){
+function moveBoid(boid, boids, velocity){
   var canvas = document.getElementById("canvas1");
   var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
-  var newVector = arenaVector(boid.location, canvasDimensions);
+  var arenaPoint = arenaVector(boid.location, canvasDimensions);
+  var flockPoint = flockPoint(boid,
+                              boids,
+                              canvasDimensions,
+                              {'range': 10, 'velocity': velocity});
   //var combinedVector = combineVectors(newVector, boid.vector);
-  var movedBoid = applyVector(boid, newVector);
+  var newPoint = combinePoints(boid.point, [arenaPoint, flockPoint]);
+  var movedBoid = applyVector(boid, newPoint);
   return movedBoid;
+}
+
+function combinePoints(startPoint, endPoints, velocity){
+  var totalX = reduce(sum, map(getX, points)); 
+  var totalY = reduce(sum, map(getY, points)); 
+  var totalDistance = distance(startPoint,
+                               {'x': totalX, 'y': totalY});
+  var percentPossible = min(1, velocity / totalDistance);
+  var possibleX = totalX * percentPossible;
+  var possibleY = totalY * percentPossible;
+  return {'x': possibleX, 'y': possibleY};
 }
 
 function applyVector(boid, vector){
@@ -45,18 +53,11 @@ function applyVector(boid, vector){
 
 function movedBoid(boid, vector){
   var movedBoid = copyBoid(boid);
-  //alert("Boid.radius = " + movedBoid.radius);
   movedBoid.location = vector;
   return movedBoid;
 }
 
 function copyBoid(boid){
-  //alert("Boid radius: " + boid.radius);
-  //var copiedBoid = {'location': boid.location, 'radius': boid.radius};
-  //var copiedBoid = {};
-  //copiedBoid.location = 
-  //alert("copiedBoid.location.x = " + copiedBoid.location.x + ", copiedBoid.radius = " + copiedBoid.radius);
-  //return copiedBoid;
   return {'location': boid.location, 'radius': boid.radius};
 }
 
@@ -69,11 +70,6 @@ function drawBoid(ctx, boid){
   var x = boid.location.x;
   var y = boid.location.y;
   var r = boid.radius;
-
-  //ctx.fillStyle = "#303000";
-  //ctx.fillRect(0, 0, 50, 70);
-
-  //alert("Drawing boid at " + x + ", " + y + ", " + r);
 
   ctx.fillStyle = "#000000";
   ctx.beginPath();
