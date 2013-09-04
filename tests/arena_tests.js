@@ -12,37 +12,38 @@ function getArenaTests(){
 
 function testArenaVector(){
   var dimensions = {'w':200, 'h':200};
-  var arenaVectorTests = [arenaVectorTest({'x':0, 'y':0}, {'x':0, 'y':5}, dimensions),
-                          arenaVectorTest({'x':0, 'y':31}, {'x':0, 'y':36}, dimensions),
-                          arenaVectorTest({'x':0, 'y':71}, {'x':0, 'y':76}, dimensions),
-                          arenaVectorTest({'x':0, 'y':131}, {'x':0, 'y':136}, dimensions),
-                          arenaVectorTest({'x':0, 'y':171}, {'x':5, 'y':171}, dimensions),
-                          arenaVectorTest({'x':31, 'y':171}, {'x':36, 'y':171}, dimensions),
-                          arenaVectorTest({'x':71, 'y':171}, {'x':76, 'y':171}, dimensions),
-                          arenaVectorTest({'x':131, 'y':171}, {'x':136, 'y':171}, dimensions),
-                          arenaVectorTest({'x':171, 'y':171}, {'x':171, 'y':166}, dimensions),
-                          arenaVectorTest({'x':171, 'y':131}, {'x':171, 'y':126}, dimensions),
-                          arenaVectorTest({'x':171, 'y':71}, {'x':171, 'y':66}, dimensions),
-                          arenaVectorTest({'x':171, 'y':31}, {'x':171, 'y':26}, dimensions),
-                          arenaVectorTest({'x':171, 'y':1}, {'x':166, 'y':1}, dimensions),
-                          arenaVectorTest({'x':131, 'y':1}, {'x':126, 'y':1}, dimensions),
-                          arenaVectorTest({'x':71, 'y':1}, {'x':66, 'y':1}, dimensions),
-                          arenaVectorTest({'x':31, 'y':1}, {'x':26, 'y':1}, dimensions),
-                          arenaVectorTest({'x':31, 'y':31}, {'x':26, 'y':31}, dimensions),
-                          arenaVectorTest({'x':31, 'y':71}, {'x':26, 'y':71}, dimensions),
-                          arenaVectorTest({'x':31, 'y':131}, {'x':31, 'y':136}, dimensions),
-                          arenaVectorTest({'x':71, 'y':131}, {'x':71, 'y':136}, dimensions),
-                          arenaVectorTest({'x':131, 'y':131}, {'x':136, 'y':131}, dimensions),
-                          arenaVectorTest({'x':131, 'y':71}, {'x':136, 'y':71}, dimensions),
-                          arenaVectorTest({'x':131, 'y':31}, {'x':131, 'y':26}, dimensions),
-                          arenaVectorTest({'x':71, 'y':31}, {'x':71, 'y':26}, dimensions),
-                          arenaVectorTest({'x':71, 'y':71}, {'x':71, 'y':66}, dimensions)];
+  var arenaVectorTests = [arenaVectorTest({'x':0, 'y':0}, 5, {'x':0, 'y':5}, dimensions),
+                          arenaVectorTest({'x':0, 'y':31}, 5, {'x':0, 'y':36}, dimensions),
+                          arenaVectorTest({'x':0, 'y':71}, 5, {'x':0, 'y':76}, dimensions),
+                          arenaVectorTest({'x':0, 'y':131}, 5, {'x':0, 'y':136}, dimensions),
+                          arenaVectorTest({'x':0, 'y':171}, 5, {'x':5, 'y':171}, dimensions),
+                          arenaVectorTest({'x':31, 'y':171}, 5, {'x':36, 'y':171}, dimensions),
+                          arenaVectorTest({'x':71, 'y':171}, 5, {'x':76, 'y':171}, dimensions),
+                          arenaVectorTest({'x':131, 'y':171}, 5, {'x':136, 'y':171}, dimensions),
+                          arenaVectorTest({'x':171, 'y':171}, 5, {'x':171, 'y':166}, dimensions),
+                          arenaVectorTest({'x':171, 'y':131}, 5, {'x':171, 'y':126}, dimensions),
+                          arenaVectorTest({'x':171, 'y':71}, 5, {'x':171, 'y':66}, dimensions),
+                          arenaVectorTest({'x':171, 'y':31}, 5, {'x':171, 'y':26}, dimensions),
+                          arenaVectorTest({'x':171, 'y':1}, 5, {'x':166, 'y':1}, dimensions),
+                          arenaVectorTest({'x':131, 'y':1}, 5, {'x':126, 'y':1}, dimensions),
+                          arenaVectorTest({'x':71, 'y':1}, 5, {'x':66, 'y':1}, dimensions),
+                          arenaVectorTest({'x':31, 'y':1}, 5, {'x':26, 'y':1}, dimensions),
+                          arenaVectorTest({'x':31, 'y':31}, 5, {'x':26, 'y':31}, dimensions),
+                          arenaVectorTest({'x':31, 'y':71}, 5, {'x':26, 'y':71}, dimensions),
+                          arenaVectorTest({'x':31, 'y':131}, 5, {'x':31, 'y':136}, dimensions),
+                          arenaVectorTest({'x':71, 'y':131}, 5, {'x':71, 'y':136}, dimensions),
+                          arenaVectorTest({'x':131, 'y':131}, 5, {'x':136, 'y':131}, dimensions),
+                          arenaVectorTest({'x':131, 'y':71}, 5, {'x':136, 'y':71}, dimensions),
+                          arenaVectorTest({'x':131, 'y':31}, 5, {'x':131, 'y':26}, dimensions),
+                          arenaVectorTest({'x':71, 'y':31}, 5, {'x':71, 'y':26}, dimensions),
+                          arenaVectorTest({'x':71, 'y':71}, 5, {'x':71, 'y':66}, dimensions)];
   return testArenaVectorPoints(arenaVectorTests);
 }
 addTest(testArenaVector);
 
-function arenaVectorTest(startPoint, endPoint, dimensions){
+function arenaVectorTest(startPoint, velocity, endPoint, dimensions){
   return {'startPoint':startPoint,
+          'velocity':velocity,
           'endPoint':endPoint,
           'dimensions': dimensions};
 }
@@ -52,7 +53,9 @@ function testArenaVectorPoints(arenaVectorTests){
     return true;
   }
   var arenaVectorTest = arenaVectorTests[0];
-  var newPoint = arenaVector(arenaVectorTest.startPoint, arenaVectorTest.dimensions);
+  var newPoint = arenaVector(arenaVectorTest.startPoint,
+                             arenaVectorTest.dimensions,
+                             arenaVectorTest.velocity);
   if(!pointsEqual(arenaVectorTest.endPoint, newPoint)){
     return "Point " + pointToString(arenaVectorTest.startPoint) +
            " should have moved to " + pointToString(arenaVectorTest.endPoint) +

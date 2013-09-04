@@ -6,12 +6,12 @@ var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft
                   [outTopMiddle, midTopRight, midMidRight, midBottomRight, outBottomMiddle],
                   [outTopRight, outMidRight, outMidRight, outMidRight, outBottomRight]];
 
-function arenaVector(point, dimensions){
+function arenaVector(point, dimensions, velocity){
   var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
   var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
-  return regionFuns[regionPoint.x][regionPoint.y].call(null, point);
+  return regionFuns[regionPoint.x][regionPoint.y].call(null, point, velocity);
 }
 
 
@@ -73,59 +73,59 @@ function regionRowOrColumn(xOrY, rowOrColEndPoints, rowOrColNum){
 
 // Outside box, from top left counter-clockwise
 // to top middle
-function outTopLeft(point){ return down(point); }
+function outTopLeft(point, velocity){ return down(point, velocity); }
 
-function outMidLeft(point){ return down(point); }
+function outMidLeft(point, velocity){ return down(point, velocity); }
 
-function outBottomLeft(point){ return right(point); }
+function outBottomLeft(point, velocity){ return right(point, velocity); }
 
-function outBottomMiddle(point){ return right(point); }
+function outBottomMiddle(point, velocity){ return right(point, velocity); }
 
-function outBottomRight(point){ return up(point); }
+function outBottomRight(point, velocity){ return up(point, velocity); }
 
-function outMidRight(point){ return up(point); }
+function outMidRight(point, velocity){ return up(point, velocity); }
 
-function outTopRight(point){ return left(point); }
+function outTopRight(point, velocity){ return left(point, velocity); }
 
-function outTopMiddle(point){ return left(point); }
+function outTopMiddle(point, velocity){ return left(point, velocity); }
 
 // Middle box, from top left counter-clockwise
 // to top middle
-function midTopLeft(point){ return left(point); }
+function midTopLeft(point, velocity){ return left(point, velocity); }
 
-function midMidLeft(point){ return left(point); }
+function midMidLeft(point, velocity){ return left(point, velocity); }
 
-function midBottomLeft(point){ return down(point); }
+function midBottomLeft(point, velocity){ return down(point, velocity); }
 
-function midBottomMiddle(point){ return down(point); }
+function midBottomMiddle(point, velocity){ return down(point, velocity); }
 
-function midBottomRight(point){ return right(point); }
+function midBottomRight(point, velocity){ return right(point, velocity); }
 
-function midMidRight(point){ return right(point); }
+function midMidRight(point, velocity){ return right(point, velocity); }
 
-function midTopRight(point){ return up(point); }
+function midTopRight(point, velocity){ return up(point, velocity); }
 
-function midTopMiddle(point){ return up(point); }
+function midTopMiddle(point, velocity){ return up(point, velocity); }
 
 // The center box
-function center(point){ return up(point); }
+function center(point, velocity){ return up(point, velocity); }
 
-function up(point){
+function up(point, velocity){
   return {'x': point.x,
-          'y': point.y - 5};
+          'y': point.y - velocity};
 }
 
-function down(point){
+function down(point, velocity){
   return {'x': point.x,
-          'y': point.y + 5};
+          'y': point.y + velocity};
 }
 
-function left(point){
-  return {'x': point.x - 5,
+function left(point, velocity){
+  return {'x': point.x - velocity,
           'y': point.y};
 }
 
-function right(point){
-  return {'x': point.x + 5,
+function right(point, velocity){
+  return {'x': point.x + velocity,
           'y': point.y};
 }
