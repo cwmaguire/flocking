@@ -13,7 +13,7 @@ function reduce(fun, arr, accum){
     return accum;
   }
 
-  var newAccum = fun.call(null, arr[0], accum);
+  var newAccum = fun.call(null, accum, arr[0]);
   return reduce(fun, arr.slice(1), newAccum);
 }
 
