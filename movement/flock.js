@@ -66,8 +66,8 @@ function aggregateAdjustments(adjustments){
   var xs = reduce(sum, map(getX, adjustments)); 
   var ys = reduce(sum, map(getY, adjustments)); 
 
-  var avgX = Math.round(xs / xs.length);
-  var avgY = Math.round(ys / ys.length);
+  var avgX = Math.round(xs / adjustments.length);
+  var avgY = Math.round(ys / adjustments.length);
 
   return {'x': avgX, 'y': avgY};
 }

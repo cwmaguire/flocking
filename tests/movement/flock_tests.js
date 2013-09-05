@@ -10,6 +10,20 @@ function getFlockTests(){
   return flockTests.slice(0);
 }
 
+function testAggregatedAdjustments(){
+  var point1 = {'x': 10, 'y':20};
+  var point2 = {'x': 20, 'y':40};
+  var result = aggregateAdjustments([point1, point2]);
+  var expectedPoint = {'x': 15, 'y': 30};
+  if(!pointsEqual(result, expectedPoint)){
+    return "testAggregatedAjustmens [{10,20},{20,40}] should have " +
+           "returned {15,30}, not " + pointToString(result);
+  }else{
+    return true;
+  }
+}
+addFlockTest(testAggregatedAdjustments);
+
 function testSum(){
   var result = sum(1, 2);
   if(result != 3){
