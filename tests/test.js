@@ -5,6 +5,7 @@ function getTests(){
   tests = tests.concat(getArenaTests());
   tests = tests.concat(getGeometryTests());
   tests = tests.concat(getFunTests());
+  tests = tests.concat(getFlockTests());
   document.getElementById("testResults").innerHTML = "found " + tests.length + " tests";
   return tests;
 }
