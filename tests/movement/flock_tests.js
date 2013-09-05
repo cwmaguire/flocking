@@ -43,6 +43,24 @@ function testAdjustToNeighbour(){
     return "Boid should go to {12, 25}, not " + pointToString(result);
   }
 
+  result = adjustToNeighbour({'x': 10, 'y': 20},
+                             {'boid': {'point': {'x': 12, 'y': 15}},
+                              'distance': 5},
+                             10,
+                             100);
+  if(!pointsEqual(result, {'x': 8, 'y': 25})){
+    return "Boid should go to {12, 25}, not " + pointToString(result);
+  }
+
+  result = adjustToNeighbour({'x': 10, 'y': 20},
+                             {'boid': {'point': {'x': 8, 'y': 25}},
+                              'distance': 5},
+                             10,
+                             100);
+  if(!pointsEqual(result, {'x': 12, 'y': 15})){
+    return "Boid should go to {12, 25}, not " + pointToString(result);
+  }
+
   return true;
 }
 addFlockTest(testAdjustToNeighbour);
