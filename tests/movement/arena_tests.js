@@ -2,7 +2,7 @@
 
 var arenaTests = [];
 
-function addTest(fun){
+function addArenaTest(fun){
   arenaTests.push(fun);
 }
 
@@ -39,7 +39,7 @@ function testArenaVector(){
                           arenaVectorTest({'x':71, 'y':71}, 5, {'x':71, 'y':66}, dimensions)];
   return testArenaVectorPoints(arenaVectorTests);
 }
-addTest(testArenaVector);
+addArenaTest(testArenaVector);
 
 function arenaVectorTest(startPoint, velocity, endPoint, dimensions){
   return {'startPoint':startPoint,
@@ -78,7 +78,7 @@ function testRegionCoords(){
     return true;
   }
 }
-addTest(testRegionCoords);
+addArenaTest(testRegionCoords);
 
 function testSizes(){
   var percentages = [0.1, 0.2, 0.3, 0.4];
@@ -92,7 +92,7 @@ function testSizes(){
     return true;
   }
 }
-addTest(testSizes);
+addArenaTest(testSizes);
 
 function testPercentsToEndPoints(){
   if(!arraysEqual(percentsToEndPoints(20, [0.1, 0.2, 0.3, 0.4]), [2, 6, 12, 20])){
@@ -101,7 +101,7 @@ function testPercentsToEndPoints(){
     return true;
   }
 }
-addTest(testPercentsToEndPoints);
+addArenaTest(testPercentsToEndPoints);
 
 function testRegionRowOrColumn(){
   var size1 = randomInt(10, 100);
@@ -134,4 +134,4 @@ function testRegionRowOrColumn(){
   }
   return true;
 }
-addTest(testRegionRowOrColumn);
+addArenaTest(testRegionRowOrColumn);

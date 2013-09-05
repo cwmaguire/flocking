@@ -3,6 +3,8 @@
 function getTests(){
   var tests = [];
   tests = tests.concat(getArenaTests());
+  tests = tests.concat(getGeometryTests());
+  tests = tests.concat(getFunTests());
   document.getElementById("testResults").innerHTML = "found " + tests.length + " tests";
   return tests;
 }

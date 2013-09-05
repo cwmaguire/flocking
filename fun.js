@@ -25,13 +25,16 @@ function foldl(fun, arr, accum){
   return foldl(fun, arr.slice(1), newAccum);
 }
 
-function map(fun, arr, results){
+function map(fun, xs, results){
   if(results === undefined){
     results = [];
   }
+  if(xs.length == 0){
+    return results;
+  }
+  var result = fun.call(null, xs[0]);
   var newResults = results.slice(0);
-  var result = fun.call(null, arr[0]);
   newResults.push(result);
-  return reduce(fun, arr.slice(1), newResults);
+  return map(fun, xs.slice(1), newResults);
 }
 
