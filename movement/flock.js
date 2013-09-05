@@ -48,18 +48,29 @@ function adjustToNeighbours(point, boidDistances, range, velocity, adjustments){
   return adjustToNeighbours(point, boidDistances.slice(1), range, velocity, newAdjustments);
 }
 
-function adjustToNeighbour(point, neighbourBoidDistance, range, velocity){
-  var distanceToBoid = distance(point, neighbourBoid.point);
-  var necessarySpace = range - neighbourBoidDistance.distance;
-  var pctOfDistReq = necessarySpace / distanceToBoid;
-  var xDistance = point.x - neighbourBoidDistance.boid.x;
-  var yDistance = point.y - neighbourBoidDistance.boid.y;
+function adjustToNeighbour(point, neighbourBoidAndDistance, range, velocity){
+  //var distanceToBoid = distance(point, neighbourBoidAndDistance.boid.point);
+  var neighbour = neighbourBoidAndDistance.boid;
+  var distance = neighbourBoidAndDistance.distance;
+  var necessarySpace = range - distance;
+  var pctOfDistReq = necessarySpace / distance;
+  //var pctOfDistReq = distance / necessarySpace;
+  var xDistance = point.x - neighbour.point.x;
+  var yDistance = point.y - neighbour.point.y;
   var oppositeXDistance = xDistance * pctOfDistReq;
-  var oppositeYDistance= yDistance * pctOfDistReq;
-  var maxOpposingX = Math.min(velocity, oppositeXDistance);
-  var maxOpposingY = Math.min(velocity, oppositeYDistance);
-  return {'x': point.x - oppositeXDistance,
-          'y': point.y - oppositeYDistance};
+  var oppositeYDistance = yDistance * pctOfDistReq;
+  if(oppositeXDistance < 0){
+    oppositeXDistance = Math.max(-velocity, oppositeXDistance);
+  }else{
+    oppositeXDistance = Math.min(velocity, oppositeXDistance);
+  }
+  if(oppositeYDistance < 0){
+    oppositeYDistance = Math.max(-velocity, oppositeYDistance);
+  }else{
+    oppositeYDistance = Math.min(velocity, oppositeYDistance);
+  }
+  return {'x': point.x + oppositeXDistance,
+          'y': point.y + oppositeYDistance};
 }
 
 function aggregateAdjustments(adjustments){

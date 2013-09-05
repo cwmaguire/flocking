@@ -10,6 +10,34 @@ function getFlockTests(){
   return flockTests.slice(0);
 }
 
+function testAdjustToNeighbour(){
+  var result = adjustToNeighbour({'x': 10, 'y': 9},
+                                 {'boid': {'point': {'x': 50, 'y': 80}},
+                                  'distance': 5},
+                                 15,
+                                 2);
+  if(!pointsEqual(result, {'x': 8, 'y': 7})){
+    return "testAdjust to neighbour with a distance of 5 and a range of 10 means " +
+           "that the boid will try and go 200% of the remaining range (200% of x1 - x2, 200% of y1 - y2) " +
+           "in the opposite direction but will be limited to -2,-2 because of the velocity " +
+           "of 2; instead the boid tried to go " + pointToString(result);
+  }
+
+  result = adjustToNeighbour({'x': 10, 'y': 20},
+                             {'boid': {'point': {'x': 12, 'y': 25}},
+                              'distance': 5},
+                             10,
+                             100);
+  if(!pointsEqual(result, {'x': 8, 'y': 15})){
+    return "testAdjust to neighbour with a distance of 5 and a range of 15 means " +
+           "that the boid will try and go 100% of the remaining range (100% of x1 - x2, 100% of y1 - y2) " +
+           "in the opposite direction; instead it tried to go to: " + pointToString(result);
+  }
+
+  return true;
+}
+addFlockTest(testAdjustToNeighbour);
+
 function testAggregatedAdjustments(){
   var point1 = {'x': 10, 'y':20};
   var point2 = {'x': 20, 'y':40};
