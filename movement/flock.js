@@ -49,26 +49,30 @@ function adjustToNeighbours(point, boidDistances, range, velocity, adjustments){
 }
 
 function adjustToNeighbour(point, neighbourBoidAndDistance, range, velocity){
-  //var distanceToBoid = distance(point, neighbourBoidAndDistance.boid.point);
   var neighbour = neighbourBoidAndDistance.boid;
   var distance = neighbourBoidAndDistance.distance;
+
   var necessarySpace = range - distance;
   var pctOfDistReq = necessarySpace / distance;
-  //var pctOfDistReq = distance / necessarySpace;
+
   var xDistance = point.x - neighbour.point.x;
   var yDistance = point.y - neighbour.point.y;
+
   var oppositeXDistance = xDistance * pctOfDistReq;
   var oppositeYDistance = yDistance * pctOfDistReq;
+
   if(oppositeXDistance < 0){
     oppositeXDistance = Math.max(-velocity, oppositeXDistance);
   }else{
     oppositeXDistance = Math.min(velocity, oppositeXDistance);
   }
+
   if(oppositeYDistance < 0){
     oppositeYDistance = Math.max(-velocity, oppositeYDistance);
   }else{
     oppositeYDistance = Math.min(velocity, oppositeYDistance);
   }
+
   return {'x': point.x + oppositeXDistance,
           'y': point.y + oppositeYDistance};
 }
