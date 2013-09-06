@@ -33,7 +33,7 @@ function findNeighboursInRange(point, boids, range, boidDistances){
   return findNeighboursInRange(point, boids.slice(1), range, newBoidDistances);
 }
 
-function adjustToNeighbours(point, boidDistances, range, velocity, adjustments){
+function adjustToNeighbours(point, boidDistances, range, adjustments){
   if(adjustments === undefined){
     adjustments = [];
   }
@@ -42,13 +42,13 @@ function adjustToNeighbours(point, boidDistances, range, velocity, adjustments){
     return adjustments.slice(0);
   }
 
-  var adjustment = adjustToNeighbour(boidDistances[0], range, velocity);
+  var adjustment = adjustToNeighbour(point, boidDistances[0], range);
   var newAdjustments = adjustments.slice(0);
   newAdjustments.push(adjustment);
-  return adjustToNeighbours(point, boidDistances.slice(1), range, velocity, newAdjustments);
+  return adjustToNeighbours(point, boidDistances.slice(1), range, newAdjustments);
 }
 
-function adjustToNeighbour(point, neighbourBoidAndDistance, range, velocity){
+function adjustToNeighbour(point, neighbourBoidAndDistance, range){
   var neighbour = neighbourBoidAndDistance.boid;
   var distance = neighbourBoidAndDistance.distance;
 
@@ -61,17 +61,17 @@ function adjustToNeighbour(point, neighbourBoidAndDistance, range, velocity){
   var oppositeXDistance = xDistance * pctOfDistReq;
   var oppositeYDistance = yDistance * pctOfDistReq;
 
-  if(oppositeXDistance < 0){
-    oppositeXDistance = Math.max(-velocity, oppositeXDistance);
-  }else{
-    oppositeXDistance = Math.min(velocity, oppositeXDistance);
-  }
+  //if(oppositeXDistance < 0){
+    //oppositeXDistance = Math.max(-velocity, oppositeXDistance);
+  //}else{
+    //oppositeXDistance = Math.min(velocity, oppositeXDistance);
+  //}
 
-  if(oppositeYDistance < 0){
-    oppositeYDistance = Math.max(-velocity, oppositeYDistance);
-  }else{
-    oppositeYDistance = Math.min(velocity, oppositeYDistance);
-  }
+  //if(oppositeYDistance < 0){
+    //oppositeYDistance = Math.max(-velocity, oppositeYDistance);
+  //}else{
+    //oppositeYDistance = Math.min(velocity, oppositeYDistance);
+  //}
 
   return {'x': point.x + oppositeXDistance,
           'y': point.y + oppositeYDistance};

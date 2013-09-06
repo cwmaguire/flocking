@@ -10,24 +10,29 @@ function getFlockTests(){
   return flockTests.slice(0);
 }
 
-function testAdjustToNeighbour(){
-  var result = adjustToNeighbour({'x': 10, 'y': 9},
-                                 {'boid': {'point': {'x': 50, 'y': 80}},
-                                  'distance': 5},
-                                 15,
-                                 2);
-  if(!pointsEqual(result, {'x': 8, 'y': 7})){
-    return "testAdjust to neighbour with a distance of 5 and a range of 10 means " +
-           "that the boid will try and go 200% of the remaining range (200% of x1 - x2, 200% of y1 - y2) " +
-           "in the opposite direction but will be limited to -2,-2 because of the velocity " +
-           "of 2; instead the boid tried to go " + pointToString(result);
-  }
+function testAdjustToNeighbours(){
+  var neighbour1 = {'boid': {'point': {'x': 12, 'y': 13}}, 'distance': 5};
+  var neighbour2 = {'boid': {'point': {'x': 11, 'y': 14}}, 'distance': 5};
 
-  result = adjustToNeighbour({'x': 10, 'y': 20},
+  var result = adjustToNeighbours({'x': 10, 'y': 9}, [neighbour1, neighbour2], 10);
+
+  if(!(pointsEqual({'x': 8, 'y': 5}, result[0]) && 
+       pointsEqual({'x': 9, 'y': 4}, result[1]))){
+    return "testAdjustToNeighbours should have returned {8,5} and {9,4} for points " +
+           "{12,13} and {11,14} and starting point {10,9}; instead it returned " + 
+           pointToString(result[0]) + " and " + pointToString(result[1]);
+  }else{
+    return true;
+  }
+}
+addFlockTest(testAdjustToNeighbours);
+
+function testAdjustToNeighbour(){
+
+  var result = adjustToNeighbour({'x': 10, 'y': 20},
                              {'boid': {'point': {'x': 12, 'y': 25}},
                               'distance': 5},
-                             10,
-                             100);
+                             10);
   if(!pointsEqual(result, {'x': 8, 'y': 15})){
     return "testAdjust to neighbour with a distance of 5 and a range of 15 means " +
            "that the boid will try and go 100% of the remaining range (100% of x1 - x2, 100% of y1 - y2) " +
@@ -37,8 +42,7 @@ function testAdjustToNeighbour(){
   result = adjustToNeighbour({'x': 10, 'y': 20},
                              {'boid': {'point': {'x': 8, 'y': 15}},
                               'distance': 5},
-                             10,
-                             100);
+                             10);
   if(!pointsEqual(result, {'x': 12, 'y': 25})){
     return "Boid should go to {12, 25}, not " + pointToString(result);
   }
@@ -46,8 +50,7 @@ function testAdjustToNeighbour(){
   result = adjustToNeighbour({'x': 10, 'y': 20},
                              {'boid': {'point': {'x': 12, 'y': 15}},
                               'distance': 5},
-                             10,
-                             100);
+                             10);
   if(!pointsEqual(result, {'x': 8, 'y': 25})){
     return "Boid should go to {12, 25}, not " + pointToString(result);
   }
@@ -55,8 +58,7 @@ function testAdjustToNeighbour(){
   result = adjustToNeighbour({'x': 10, 'y': 20},
                              {'boid': {'point': {'x': 8, 'y': 25}},
                               'distance': 5},
-                             10,
-                             100);
+                             10);
   if(!pointsEqual(result, {'x': 12, 'y': 15})){
     return "Boid should go to {12, 25}, not " + pointToString(result);
   }
