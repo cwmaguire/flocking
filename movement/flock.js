@@ -61,8 +61,6 @@ function adjustToNeighbour(point, neighbourBoidAndDistance, range){
   var oppositeXDistance = Math.round(xDistance * pctOfDistReq);
   var oppositeYDistance = Math.round(yDistance * pctOfDistReq);
 
-  alert("returning " + point.x + " + " oppositeXDistance
-
   return {'x': point.x + oppositeXDistance,
           'y': point.y + oppositeYDistance};
 }
