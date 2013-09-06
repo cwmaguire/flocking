@@ -21,6 +21,10 @@ function testFlockVector(){
                            [boid1, boid2, boid3, boid4],
                            {'range': 5, 'velocity': 5});
 
+  if(!pointsEqual({'x': 0, 'y': 1}, result)){
+    return "Wow, the calculations are ridiculous but should be {0,1}, not " + pointToString(result);
+  }
+
   return true;
 }
 addFlockTest(testFlockVector);
