@@ -1,21 +1,26 @@
 "use strict";
 
-function animate(boids){
+function animate(boids, velocity){
+  log("animating " + boids.length + " boids");
   var canvas = document.getElementById("canvas1");
   var ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  return animateBoids(ctx, boids, []);
+  var slicedBoids = boids.slice(0);
+  log("slicedBoids.length is " + slicedBoids.length);
+
+  return animateBoids(ctx, velocity, boids.slice(0), []);
 }
 
-function animateBoids(ctx, velocity, boids, animatedBoids){
+function animateBoids(ctx, velocity, boidsToAnimate, animatedBoids){
   if(animatedBoids === undefined){
     animatedBoids = [];
   }
-  if(boids.length > 0){
+  if(boidsToAnimate.length > 0){
+    log("animating " + boidsToAnimate.length + " boids");
 
-    var newBoid = moveBoid(boids[0],
-                           boids.concat(animatedBoids),
+    var newBoid = moveBoid(boidsToAnimate[0],
+                           boidsToAnimate.concat(animatedBoids),
                            velocity);
     drawBoid(ctx, newBoid);
 
@@ -23,7 +28,7 @@ function animateBoids(ctx, velocity, boids, animatedBoids){
     newAnimatedBoids.push(newBoid);
     return animateBoids(ctx, boids.slice(1), newAnimatedBoids);
   }else{
-    log("animatedBoids is " + animatedBoids + " and length is " + animatedBoids.length);
+    log("animatedBoids is empty");
     return animatedBoids;
   }
 }
@@ -32,10 +37,10 @@ function moveBoid(boid, boids, velocity){
   var canvas = document.getElementById("canvas1");
   var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
   var arenaPoint = arenaVector(boid.location, canvasDimensions);
-  var flockPoint = flockPoint(boid,
-                              boids,
-                              canvasDimensions,
-                              {'range': 10, 'velocity': velocity});
+  var flockPoint = flockVector(boid,
+                               boids,
+                               canvasDimensions,
+                               {'range': 10, 'velocity': velocity});
   //var combinedVector = combineVectors(newVector, boid.vector);
   var newPoint = combinePoints(boid.point, [arenaPoint, flockPoint]);
   var movedBoid = applyVector(boid, newPoint);
@@ -43,8 +48,8 @@ function moveBoid(boid, boids, velocity){
 }
 
 function combinePoints(startPoint, endPoints, velocity){
-  var totalX = reduce(sum, map(getX, points)); 
-  var totalY = reduce(sum, map(getY, points)); 
+  var totalX = reduce(sum, map(getX, endPoints)); 
+  var totalY = reduce(sum, map(getY, endPoints)); 
   var totalDistance = distance(startPoint,
                                {'x': totalX, 'y': totalY});
   var percentPossible = min(1, velocity / totalDistance);

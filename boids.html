@@ -12,12 +12,15 @@
     <script type="text/javascript" src="tests/fun_tests.js"></script>
     <script type="text/javascript" src="boids.js"></script>
     <script type="text/javascript">
-      var boids = [];
+      var boids = [{'location': {'x': 10, 'y': 10}}];
       var interval;
 
       function go(){
-        log("Going");
-        interval = setInterval(function() {boids = animate(boids)}, 400);
+        var velocity = document.getElementById("velocity").value;
+        log("Going at " + velocity);
+        interval = setInterval(function() {log("boids.length is now " + boids.length);
+                                           boids = animate(boids);
+                                           log("boids.length is now " + boids.length);}, 400);
       }
 
       function stop(){
@@ -41,6 +44,7 @@
     <button id="go" onclick="go();">Go!</button>
     <button id="stop" onclick="stop();">Stop</button>
     <button id="clearLog" onclick="clearLog();">Clear</button>
+    Velocity: <input type="text" id="velocity" value="5">
     <br>
     <textarea id="log" style="border:1px solid black; width:800px; height:300px">Text</textarea>
     <br>

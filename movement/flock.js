@@ -12,25 +12,25 @@ function flockVector(boid, neighbourBoids, flockBehaviours){
   return aggregatedAdjustment;
 }
 
-function findNeighboursInRange(point, boids, range, boidDistances){
+function findNeighboursInRange(point, allBoids, range, boidDistances){
   if(boidDistances === undefined){
     boidDistances = [];
   }
 
-  if(boids.length == 0){
+  if(allBoids.length == 0){
     return boidDistances.slice(0);
   }
 
   var newBoidDistances = boidDistances.slice(0);
 
-  var distanceToBoid = distance(point, boids[0].location) 
+  var distanceToBoid = distance(point, allBoids[0].location) 
 
   if(distanceToBoid < range){
-    newBoidDistances.push({'boid': copyBoid(boids[0]),
+    newBoidDistances.push({'boid': copyBoid(allBoids[0]),
                            'distance': distanceToBoid});
   }
 
-  return findNeighboursInRange(point, boids.slice(1), range, newBoidDistances);
+  return findNeighboursInRange(point, allBoids.slice(1), range, newBoidDistances);
 }
 
 function adjustToNeighbours(point, boidDistances, range, adjustments){
