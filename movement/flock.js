@@ -18,16 +18,16 @@ function findNeighboursInRange(point, boids, range, boidDistances){
   }
 
   if(boids.length == 0){
-    return boidsInRange.slice(0);
+    return boidDistances.slice(0);
   }
 
   var newBoidDistances = boidDistances.slice(0);
 
-  var distance = distance(point, boids[0].point) 
+  var distanceToBoid = distance(point, boids[0].location) 
 
-  if(range < distance){
+  if(distanceToBoid <= range){
     newBoidDistances.push({'boid': copyBoid(boids[0]),
-                           'distance': distance});
+                           'distance': distanceToBoid});
   }
 
   return findNeighboursInRange(point, boids.slice(1), range, newBoidDistances);
@@ -55,8 +55,8 @@ function adjustToNeighbour(point, neighbourBoidAndDistance, range){
   var necessarySpace = range - distance;
   var pctOfDistReq = necessarySpace / distance;
 
-  var xDistance = point.x - neighbour.point.x;
-  var yDistance = point.y - neighbour.point.y;
+  var xDistance = point.x - neighbour.location.x;
+  var yDistance = point.y - neighbour.location.y;
 
   var oppositeXDistance = xDistance * pctOfDistReq;
   var oppositeYDistance = yDistance * pctOfDistReq;

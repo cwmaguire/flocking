@@ -10,16 +10,61 @@ function getFlockTests(){
   return flockTests.slice(0);
 }
 
+function testFindNeighboursInRange(){
+  var point = {'x': 0, 'y': 0};
+  var boid1 = {'location': {'x': 3, 'y': 4}};
+  var boid2 = {'location': {'x': 4, 'y': 5}};
+  var boid3 = {'location': {'x': 2, 'y': 3}};
+  var boid4 = {'location': {'x': -2, 'y': -3}};
+  var boid5 = {'location': {'x': -4, 'y': -5}};
+  var boid6 = {'location': {'x': -2, 'y': 3}};
+  var boid7 = {'location': {'x': -4, 'y': 5}};
+  var boid8 = {'location': {'x': 2, 'y': -3}};
+  var boid9 = {'location': {'x': 4, 'y': -5}};
+
+  var result = findNeighboursInRange(point, [boid1, boid2, boid3], 5);
+
+  if(!(result.length == 2 &&
+       pointsEqual(boid1.location, result[0].boid.location) &&
+       pointsEqual(boid3.location, result[1].boid.location))){
+    return "Points {3,4} and {2,3} should have been within five of {0,0}, " +
+           "but not {4,5}; got " + pointToString(result[0].boid.location) +
+           " and " + pointToString(result[1].boid.location);
+  }
+
+
+  result = findNeighboursInRange(point, [boid4, boid5], 5);
+  if(!result.length == 1 && pointsEqual(boid4.location, result[0].boid.location)){
+    return "Point {-2,-3} should be within 4 of {0,0} but not {-4,-5}; got " +
+           result;
+  }
+
+  result = findNeighboursInRange(point, [boid6, boid7], 5);
+  if(!result.length == 1 && pointsEqual(boid6.location, result[0].boid.location)){
+    return "Point {-2,3} should be within 4 of {0,0} but not {-4,5}; got" +
+           result;
+  }
+
+  result = findNeighboursInRange(point, [boid8, boid9], 5);
+  if(!result.length == 1 && pointsEqual(boid8.location, result[0].boid.location)){
+    return "Point {2,-3} should be within 4 of {0,0} but not {4,5}; got" +
+           result;
+  }
+  
+  return true;
+}
+addFlockTest(testFindNeighboursInRange);
+
 function testAdjustToNeighbours(){
-  var neighbour1 = {'boid': {'point': {'x': 12, 'y': 13}}, 'distance': 5};
-  var neighbour2 = {'boid': {'point': {'x': 11, 'y': 14}}, 'distance': 5};
+  var neighbour1 = {'boid': {'location': {'x': 12, 'y': 13}}, 'distance': 5};
+  var neighbour2 = {'boid': {'location': {'x': 11, 'y': 14}}, 'distance': 5};
 
   var result = adjustToNeighbours({'x': 10, 'y': 9}, [neighbour1, neighbour2], 10);
 
-  if(!(pointsEqual({'x': 8, 'y': 5}, result[0]) && 
+  if(!(pointsEqual({'x': 8, 'y': 5}, result[0]) &&
        pointsEqual({'x': 9, 'y': 4}, result[1]))){
     return "testAdjustToNeighbours should have returned {8,5} and {9,4} for points " +
-           "{12,13} and {11,14} and starting point {10,9}; instead it returned " + 
+           "{12,13} and {11,14} and starting point {10,9}; instead it returned " +
            pointToString(result[0]) + " and " + pointToString(result[1]);
   }else{
     return true;
@@ -30,7 +75,7 @@ addFlockTest(testAdjustToNeighbours);
 function testAdjustToNeighbour(){
 
   var result = adjustToNeighbour({'x': 10, 'y': 20},
-                             {'boid': {'point': {'x': 12, 'y': 25}},
+                             {'boid': {'location': {'x': 12, 'y': 25}},
                               'distance': 5},
                              10);
   if(!pointsEqual(result, {'x': 8, 'y': 15})){
@@ -40,7 +85,7 @@ function testAdjustToNeighbour(){
   }
 
   result = adjustToNeighbour({'x': 10, 'y': 20},
-                             {'boid': {'point': {'x': 8, 'y': 15}},
+                             {'boid': {'location': {'x': 8, 'y': 15}},
                               'distance': 5},
                              10);
   if(!pointsEqual(result, {'x': 12, 'y': 25})){
@@ -48,7 +93,7 @@ function testAdjustToNeighbour(){
   }
 
   result = adjustToNeighbour({'x': 10, 'y': 20},
-                             {'boid': {'point': {'x': 12, 'y': 15}},
+                             {'boid': {'location': {'x': 12, 'y': 15}},
                               'distance': 5},
                              10);
   if(!pointsEqual(result, {'x': 8, 'y': 25})){
@@ -56,7 +101,7 @@ function testAdjustToNeighbour(){
   }
 
   result = adjustToNeighbour({'x': 10, 'y': 20},
-                             {'boid': {'point': {'x': 8, 'y': 25}},
+                             {'boid': {'location': {'x': 8, 'y': 25}},
                               'distance': 5},
                              10);
   if(!pointsEqual(result, {'x': 12, 'y': 15})){
