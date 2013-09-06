@@ -1,3 +1,5 @@
+"use strict";
+
 function animate(boids){
   var canvas = document.getElementById("canvas1");
   var ctx = canvas.getContext("2d");
@@ -6,19 +8,23 @@ function animate(boids){
   return animateBoids(ctx, boids, []);
 }
 
-function animateBoids(ctx, velocity, boids, newBoids){
+function animateBoids(ctx, velocity, boids, animatedBoids){
+  if(animatedBoids === undefined){
+    animatedBoids = [];
+  }
   if(boids.length > 0){
 
     var newBoid = moveBoid(boids[0],
-                           boids.concat(newBoids),
+                           boids.concat(animatedBoids),
                            velocity);
     drawBoid(ctx, newBoid);
 
-    var newBoids = newBoids.slice(0);
-    newBoids.push(newBoid);
-    return animateBoids(ctx, boids.slice(1), newBoids);
+    var newAnimatedBoids = animatedBoids.slice(0);
+    newAnimatedBoids.push(newBoid);
+    return animateBoids(ctx, boids.slice(1), newAnimatedBoids);
   }else{
-    return newBoids;
+    log("animatedBoids is " + animatedBoids + " and length is " + animatedBoids.length);
+    return animatedBoids;
   }
 }
 
@@ -62,6 +68,7 @@ function copyBoid(boid){
 }
 
 function addBoid(point){
+  log("boids is " + boids + " and length is " + boids.length);
   boids.push({'location': point, 'radius': 10});
 }
 

@@ -1,5 +1,6 @@
 <html>
   <head>
+    <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript" src="tests/test.js"></script>
     <script type="text/javascript" src="movement/arena.js"></script>
     <script type="text/javascript" src="tests/movement/arena_tests.js"></script>
@@ -12,9 +13,15 @@
     <script type="text/javascript" src="boids.js"></script>
     <script type="text/javascript">
       var boids = [];
+      var interval;
 
       function go(){
-        setInterval(function() {boids = animate(boids)}, 40);
+        log("Going");
+        interval = setInterval(function() {boids = animate(boids)}, 400);
+      }
+
+      function stop(){
+        clearInterval(interval);
       }
 
       function canvasClick(event){
@@ -31,7 +38,11 @@
     Text
     <br>
     <button id="addBoid" onclick="addBoid()">Add Boid</button>
-    <button id="addBoid" onclick="go()">Go!</button>
+    <button id="go" onclick="go();">Go!</button>
+    <button id="stop" onclick="stop();">Stop</button>
+    <button id="clearLog" onclick="clearLog();">Clear</button>
+    <br>
+    <textarea id="log" style="border:1px solid black; width:800px; height:300px">Text</textarea>
     <br>
     <canvas id="canvas1" width="600" height="600" style="border:1px solid black;" onclick="canvasClick(event);"></canvas>
   </body>
