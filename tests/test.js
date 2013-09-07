@@ -71,14 +71,6 @@ function arraysEqual(array1, array2){
   }
 }
 
-function pointsEqual(point1, point2){
-  return point1.x == point2.x && point1.y == point2.y;
-}
-
-function pointToString(point){
-  return "{" + point.x + "," + point.y + "}";
-}
-
 function randomInt(min, max){
   if(max === undefined){
     max = min;
