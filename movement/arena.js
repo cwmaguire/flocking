@@ -11,6 +11,8 @@ function arenaVector(point, dimensions, velocity){
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
   var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
+  //log("region fun = " + regionFun.split("(")[0]);
+  //log("point is " + pointToString(point));
   return regionFuns[regionPoint.x][regionPoint.y].call(null, point, velocity);
 }
 
@@ -116,6 +118,7 @@ function up(point, velocity){
 }
 
 function down(point, velocity){
+  //log("Moving point " + pointToString(point) + " down " + velocity);
   return {'x': point.x,
           'y': point.y + velocity};
 }
