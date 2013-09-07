@@ -10,9 +10,25 @@ function getBoidsTests(){
   return boidsTests.slice(0);
 }
 
+function testCombinePoints(){
+  var startPoint = point(10, 10);
+  var endPoints = [point(13, 14), point(13, 14)];
+  var velocity = 20;
+
+  var result = combinePoints(startPoint, endPoints, velocity);
+
+  if(!pointsEqual(point(16,18), result)){
+    return "10,10 should move 6 right and 8 down to 16,18 but went to " +
+           pointToString(result) + " instead.";
+  }else{
+    return true;
+  }
+}
+addBoidsTest(testCombinePoints);
+
 function testMoveBoid(){
-  var result = moveBoid({'location': {'x': 10, 'y': 20}},
-                        {'x': 100, 'y': 200});
+  var result = moveBoid({'location': point(10, 20)},
+                        point(100, 200));
   var x = result.location.x;
   var y = result.location.y;
 

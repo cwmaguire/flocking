@@ -48,14 +48,16 @@ function moveBoid(boid, boids, velocity){
 }
 
 function combinePoints(startPoint, endPoints, velocity){
-  var totalX = reduce(sum, map(getX, endPoints)); 
-  var totalY = reduce(sum, map(getY, endPoints)); 
+  var pointDifferences = pointsRelativeTo(startPoint, endPoints);
+  var totalX = reduce(sum, map(getX, pointDifferences)); 
+  var totalY = reduce(sum, map(getY, pointDifferences)); 
+  log("Calling distance with " + pointToString(startPoint) + " and {" + totalX + "," + totalY + "}");
   var totalDistance = distance(startPoint,
                                {'x': totalX, 'y': totalY});
-  var percentPossible = min(1, velocity / totalDistance);
-  var possibleX = totalX * percentPossible;
-  var possibleY = totalY * percentPossible;
-  return {'x': possibleX, 'y': possibleY};
+  var percentPossible = Math.min(1, velocity / totalDistance);
+  var possibleX = Math.round(totalX * percentPossible);
+  var possibleY = Math.round(totalY * percentPossible);
+  return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
 }
 
 function applyVector(boid, vector){
