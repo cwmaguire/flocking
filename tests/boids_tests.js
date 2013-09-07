@@ -10,6 +10,17 @@ function getBoidsTests(){
   return boidsTests.slice(0);
 }
 
+testApplyMovementPipeline(){
+  var drawBoidTestFun = function(boid){ return true; };
+  var velocity = 10;
+  var boid0 = boid(point(9,9), 9);
+  var boid1 = boid(point(10,10), 10);
+  var boid2 = boid(point(11,11), 11);
+
+  // Okay, do all the math and figure out what these should be ...
+  // OR figure out a way to mock out arenaPoint and flockPoint
+}
+
 function testCombinePoints(){
   var startPoint = point(10, 10);
   var endPoints = [point(13, 14), point(13, 14)];
