@@ -11,16 +11,15 @@
     <script type="text/javascript" src="fun.js"></script>
     <script type="text/javascript" src="tests/fun_tests.js"></script>
     <script type="text/javascript" src="boids.js"></script>
+    <script type="text/javascript" src="tests/boids_tests.js"></script>
     <script type="text/javascript">
       var boids = [{'location': {'x': 10, 'y': 10}}];
       var interval;
 
       function go(){
         var velocity = document.getElementById("velocity").value;
-        log("Going at " + velocity);
-        interval = setInterval(function() {log("boids.length is now " + boids.length);
-                                           boids = animate(boids);
-                                           log("boids.length is now " + boids.length);}, 400);
+        //log("Going at " + velocity);
+        interval = setInterval(function() {boids = animate(boids, velocity);}, 400);
       }
 
       function stop(){
