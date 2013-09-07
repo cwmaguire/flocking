@@ -59,10 +59,10 @@ function combinePoints(startPoint, endPoints, velocity){
 }
 
 function applyVector(boid, vector){
-  return movedBoid(boid, vector);
+  return moveBoid(boid, vector);
 }
 
-function movedBoid(boid, vector){
+function moveBoid(boid, vector){
   var movedBoid = copyBoid(boid);
   movedBoid.location = vector;
   return movedBoid;
