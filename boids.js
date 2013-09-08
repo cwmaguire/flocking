@@ -7,11 +7,22 @@ function animate(boids, velocity){
   var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  var slicedBoids = boids.slice(0);
-  //log("slicedBoids.length is " + slicedBoids.length);
+  var world = {'boids': boids.slice(0),
+               'velocity': velocity,
+               'canvasDimensions': canvasDimensions,
+               'range', 10};
 
-  return animateBoids(drawBoidFun(ctx), velocity, canvasDimensions, boids.slice(0), []);
+  return animateBoids(drawBoidFun(ctx), world, []);
 }
+
+function changeWorldBoids(boids, world){
+  return newWorld(boids, world.velocity, canvasDimensions, range);
+
+function newWorld(boids, velocity, canvasDimensions, range){
+  return {'boids': boids,
+          'velocity': velocity,
+          'canvasDimensions': canvasDimensions,
+          'range': range};
 
 function drawBoidFun(ctx){
   function(boid){
@@ -19,42 +30,24 @@ function drawBoidFun(ctx){
   }
 }
 
-function animateBoids(drawBoidFun,
-                      velocity,
-                      canvasDimensions,
-                      boidsToAnimate,
-                      animatedBoids){
-  if(animatedBoids === undefined){
-    animatedBoids = [];
-  }
-  if(boidsToAnimate.length > 0){
-    //log("animating " + boidsToAnimate.length + " boids");
-    //log("Moving boid " + pointToString(boidsToAnimate[0].location) + " with velocity " + velocity);
+function animateBoids(drawBoidFun, world, animatedBoids){
+  if(boidsToAnimate.length == 0){
+    return animatedboids;
+  }else{
+    if(animatedBoids === undefined){
+      animatedBoids = [];
+    }
 
-    var newBoid = applyMovementPipeline(boidsToAnimate[0],
-                                        boidsToAnimate.concat(animatedBoids),
-                                        velocity,
-                                        canvasDimensions);
-    //log("Drawing boid?");
-    //log("Drawing boid " + newBoid.location.x + ", " + newBoid.location.y);
-    //drawBoid(ctx, newBoid);
+    var movedBoid = moveBoid(world, animatedBoids);
+
     drawBoidFun(newBoid);
 
     var newAnimatedBoids = animatedBoids.slice(0);
     newAnimatedBoids.push(newBoid);
     return animateBoids(ctx, boids.slice(1), newAnimatedBoids);
   }else{
-    //log("animatedBoids is empty");
     return animatedBoids;
   }
-}
-
-function applyMovementPipeline(boid, boids, velocity, canvasDimensions){
-  var arenaPoint = arenaVector(boid.location, canvasDimensions, velocity);
-  var flockPoint = flockVector(boid, boids, {'range': 10, 'velocity': velocity});
-  var newPoint = combinePoints(boid.point, [arenaPoint, flockPoint]);
-  var movedBoid = applyVector(boid, newPoint);
-  return movedBoid;
 }
 
 function combinePoints(startPoint, endPoints, velocity){
@@ -70,11 +63,18 @@ function combinePoints(startPoint, endPoints, velocity){
   return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
 }
 
-function applyVector(boid, vector){
-  return moveBoid(boid, vector);
-}
+function moveBoid(world, movedBoids){
+  var boid = world.boids[0];
+  var worldBoids = world.boids.slice(1).concatenate(movedBoids);
+  var newWorld = changeWorldBoids(worldBoids, world);
 
-function moveBoid(boid, vector){
+  var applyMovementFun = function(movementFun){
+                             movementFun.call(null, newWorld);
+                         };
+
+  var movementPoints = map(applyMovementFun, [arenaVector, flockVector]);
+
+  var newPoint = combinePoints(boid.point, [arenaPoint, flockPoint]);
   var movedBoid = copyBoid(boid);
   movedBoid.location = vector;
   return movedBoid;
