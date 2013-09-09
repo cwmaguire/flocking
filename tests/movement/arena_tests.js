@@ -12,40 +12,41 @@ function getArenaTests(){
 
 function testArenaVector(){
   var dimensions = {'w':200, 'h':200};
-  var arenaVectorTests = [arenaVectorTest({'x':0, 'y':0}, 5, {'x':0, 'y':5}, dimensions),
-                          arenaVectorTest({'x':0, 'y':31}, 5, {'x':0, 'y':36}, dimensions),
-                          arenaVectorTest({'x':0, 'y':71}, 5, {'x':0, 'y':76}, dimensions),
-                          arenaVectorTest({'x':0, 'y':131}, 5, {'x':0, 'y':136}, dimensions),
-                          arenaVectorTest({'x':0, 'y':171}, 5, {'x':5, 'y':171}, dimensions),
-                          arenaVectorTest({'x':31, 'y':171}, 5, {'x':36, 'y':171}, dimensions),
-                          arenaVectorTest({'x':71, 'y':171}, 5, {'x':76, 'y':171}, dimensions),
-                          arenaVectorTest({'x':131, 'y':171}, 5, {'x':136, 'y':171}, dimensions),
-                          arenaVectorTest({'x':171, 'y':171}, 5, {'x':171, 'y':166}, dimensions),
-                          arenaVectorTest({'x':171, 'y':131}, 5, {'x':171, 'y':126}, dimensions),
-                          arenaVectorTest({'x':171, 'y':71}, 5, {'x':171, 'y':66}, dimensions),
-                          arenaVectorTest({'x':171, 'y':31}, 5, {'x':171, 'y':26}, dimensions),
-                          arenaVectorTest({'x':171, 'y':1}, 5, {'x':166, 'y':1}, dimensions),
-                          arenaVectorTest({'x':131, 'y':1}, 5, {'x':126, 'y':1}, dimensions),
-                          arenaVectorTest({'x':71, 'y':1}, 5, {'x':66, 'y':1}, dimensions),
-                          arenaVectorTest({'x':31, 'y':1}, 5, {'x':26, 'y':1}, dimensions),
-                          arenaVectorTest({'x':31, 'y':31}, 5, {'x':26, 'y':31}, dimensions),
-                          arenaVectorTest({'x':31, 'y':71}, 5, {'x':26, 'y':71}, dimensions),
-                          arenaVectorTest({'x':31, 'y':131}, 5, {'x':31, 'y':136}, dimensions),
-                          arenaVectorTest({'x':71, 'y':131}, 5, {'x':71, 'y':136}, dimensions),
-                          arenaVectorTest({'x':131, 'y':131}, 5, {'x':136, 'y':131}, dimensions),
-                          arenaVectorTest({'x':131, 'y':71}, 5, {'x':136, 'y':71}, dimensions),
-                          arenaVectorTest({'x':131, 'y':31}, 5, {'x':131, 'y':26}, dimensions),
-                          arenaVectorTest({'x':71, 'y':31}, 5, {'x':71, 'y':26}, dimensions),
-                          arenaVectorTest({'x':71, 'y':71}, 5, {'x':71, 'y':66}, dimensions)];
+  var arenaVectorTests = [arenaVectorTest(point(0,0), 5, point(0,5), dimensions),
+                          arenaVectorTest(point(0,31), 5, point(0,36), dimensions),
+                          arenaVectorTest(point(0,71), 5, point(0,76), dimensions),
+                          arenaVectorTest(point(0,131), 5, point(0,136), dimensions),
+                          arenaVectorTest(point(0,171), 5, point(5,171), dimensions),
+                          arenaVectorTest(point(31,171), 5, point(36,171), dimensions),
+                          arenaVectorTest(point(71,171), 5, point(76,171), dimensions),
+                          arenaVectorTest(point(131,171), 5, point(136,171), dimensions),
+                          arenaVectorTest(point(171,171), 5, point(171,166), dimensions),
+                          arenaVectorTest(point(171,131), 5, point(171,126), dimensions),
+                          arenaVectorTest(point(171,71), 5, point(171,66), dimensions),
+                          arenaVectorTest(point(171,31), 5, point(171,26), dimensions),
+                          arenaVectorTest(point(171,1), 5, point(166,1), dimensions),
+                          arenaVectorTest(point(131,1), 5, point(126,1), dimensions),
+                          arenaVectorTest(point(71,1), 5, point(66,1), dimensions),
+                          arenaVectorTest(point(31,1), 5, point(26,1), dimensions),
+                          arenaVectorTest(point(31,31), 5, point(26,31), dimensions),
+                          arenaVectorTest(point(31,71), 5, point(26,71), dimensions),
+                          arenaVectorTest(point(31,131), 5, point(31,136), dimensions),
+                          arenaVectorTest(point(71,131), 5, point(71,136), dimensions),
+                          arenaVectorTest(point(131,131), 5, point(136,131), dimensions),
+                          arenaVectorTest(point(131,71), 5, point(136,71), dimensions),
+                          arenaVectorTest(point(131,31), 5, point(131,26), dimensions),
+                          arenaVectorTest(point(71,31), 5, point(71,26), dimensions),
+                          arenaVectorTest(point(71,71), 5, point(71,66), dimensions)];
   return testArenaVectorPoints(arenaVectorTests);
 }
 addArenaTest(testArenaVector);
 
 function arenaVectorTest(startPoint, velocity, endPoint, dimensions){
-  return {'startPoint':startPoint,
-          'velocity':velocity,
-          'endPoint':endPoint,
-          'dimensions': dimensions};
+  return {'world': newWorld(newBoid(startPoint),
+                            [],[],velocity,
+                            dimensions,
+                            0),
+          'endPoint': endPoint};
 }
 
 function testArenaVectorPoints(arenaVectorTests){
@@ -53,9 +54,7 @@ function testArenaVectorPoints(arenaVectorTests){
     return true;
   }
   var arenaVectorTest = arenaVectorTests[0];
-  var newPoint = arenaVector(arenaVectorTest.startPoint,
-                             arenaVectorTest.dimensions,
-                             arenaVectorTest.velocity);
+  var newPoint = arenaVector(arenaVectorTest.world);
   if(!pointsEqual(arenaVectorTest.endPoint, newPoint)){
     return "Point " + pointToString(arenaVectorTest.startPoint) +
            " should have moved to " + pointToString(arenaVectorTest.endPoint) +
@@ -69,9 +68,11 @@ function testRegionCoords(){
   var columnPercentages = [0.1, 0.2];
   var rowPercentages = [0.5, 0.5];
   var dimensions = {'w': 100, 'h': 100};
-  var point = {'x':20, 'y':51};
   var expectedRowColumnPoint = {'x':1, 'y':1};
-  var rowColumnPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
+  var world = newWorld(newBoid(point(20, 51)), [], [], 0, dimensions, 0);
+
+  var rowColumnPoint = regionCoords(world, columnPercentages, rowPercentages);
+
   if(!pointsEqual(expectedRowColumnPoint, rowColumnPoint)){
     return "Row/Column point should be {1,1}, not " + rowColumnPoint.x + "," + rowColumnPoint.y;
   }else{
