@@ -13,23 +13,46 @@
     <script type="text/javascript" src="boids.js"></script>
     <script type="text/javascript" src="tests/boids_tests.js"></script>
     <script type="text/javascript">
-      var boids = [{'location': {'x': 10, 'y': 10}}];
+      var boids = [];
       var interval;
 
       function go(){
-        var velocity = document.getElementById("velocity").value;
-        //log("Going at " + velocity);
-        interval = setInterval(function() {boids = animate(boids, velocity);}, 400);
+        interval = setInterval(function() {
+                                   boids = animate(boids.slice(0));
+                               },
+                               40);
       }
 
       function stop(){
         clearInterval(interval);
       }
 
+      function animate(boids){
+        var canvas = document.getElementById("canvas1");
+        var ctx = canvas.getContext("2d");
+        var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
+
+        var velocity = document.getElementById("velocity").value;
+
+        var world = {'boid': boids[0],
+                     'boids': boids.slice(1),
+                     'movedBoids': [],
+                     'velocity': velocity,
+                     'canvasDimensions': canvasDimensions,
+                     'range': 30,
+                     'movementFuns': [flockVector, arenaVector],
+                     //'movementFuns': [flockVector],
+                     'ctx': ctx};
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return animateBoids(drawBoid, world);
+      }
+
       function canvasClick(event){
         var canvas = document.getElementById("canvas1");
         var x = event.pageX - canvas.offsetLeft;
         var y = event.pageY - canvas.offsetTop;
+        log("Adding boid at " + x + "," + y);
         addBoid({'x': x, 'y': y});
       }
     </script>
@@ -37,15 +60,13 @@
   <body onload="runTests();">
     <div id="testResults">&lt;no test results&gt;</div>
     <br>
-    Text
-    <br>
-    <button id="addBoid" onclick="addBoid()">Add Boid</button>
     <button id="go" onclick="go();">Go!</button>
     <button id="stop" onclick="stop();">Stop</button>
     <button id="clearLog" onclick="clearLog();">Clear</button>
+    <input type=checkbox id="shouldLog" value="log?">Log?</input>
     Velocity: <input type="text" id="velocity" value="5">
     <br>
-    <textarea id="log" style="border:1px solid black; width:800px; height:300px">Text</textarea>
+    <textarea id="log" style="border:1px solid black; width:900px; height:100px"></textarea>
     <br>
     <canvas id="canvas1" width="600" height="600" style="border:1px solid black;" onclick="canvasClick(event);"></canvas>
   </body>
