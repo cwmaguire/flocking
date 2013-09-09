@@ -8,4 +8,5 @@ What I'd like to do is use an HTML5 canvas to draw some boids flocking.
 Videos:
 
 [Demo 1](http://youtu.be/mhMBWtL0bqM)  
+[Demo 2](http://youtu.be/ThDdzBwLd1w)  
 [Code Walkthrough](http://youtu.be/OPuYYLEyz-A)  
