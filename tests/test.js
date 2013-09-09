@@ -27,11 +27,12 @@ function runTests(tests, results){
   try{
     result = tests[0].call(null);
   }catch(err){
-    result = tests[0].toString().split("(")[0] + " caused error: " + err.message;
+    result = tests[0].toString().split("(")[0] + " caused error: " + err.message + " (" + err.lineNumber + ")";
   }
   var newResults = results.slice(0);
   if(result != true){
-    newResults.push(result);
+    //newResults.push(result);
+    newResults.push(tests[0].toString().split("(")[0] + ": " + result);
   }
   return runTests(tests.slice(1), newResults);
 }
