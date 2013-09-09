@@ -1,20 +1,58 @@
 <html>
   <head>
+    <script type="text/javascript" src="util.js"></script>
     <script type="text/javascript" src="tests/test.js"></script>
-    <script type="text/javascript" src="arena.js"></script>
-    <script type="text/javascript" src="tests/arena_tests.js"></script>
+    <script type="text/javascript" src="movement/arena.js"></script>
+    <script type="text/javascript" src="tests/movement/arena_tests.js"></script>
+    <script type="text/javascript" src="movement/flock.js"></script>
+    <script type="text/javascript" src="tests/movement/flock_tests.js"></script>
+    <script type="text/javascript" src="geometry.js"></script>
+    <script type="text/javascript" src="tests/geometry_tests.js"></script>
+    <script type="text/javascript" src="fun.js"></script>
+    <script type="text/javascript" src="tests/fun_tests.js"></script>
     <script type="text/javascript" src="boids.js"></script>
+    <script type="text/javascript" src="tests/boids_tests.js"></script>
     <script type="text/javascript">
       var boids = [];
+      var interval;
 
       function go(){
-        setInterval(function() {boids = animate(boids)}, 40);
+        interval = setInterval(function() {
+                                   boids = animate(boids.slice(0));
+                               },
+                               40);
+      }
+
+      function stop(){
+        clearInterval(interval);
+      }
+
+      function animate(boids){
+        var canvas = document.getElementById("canvas1");
+        var ctx = canvas.getContext("2d");
+        var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
+
+        var velocity = document.getElementById("velocity").value;
+
+        var world = {'boid': boids[0],
+                     'boids': boids.slice(1),
+                     'movedBoids': [],
+                     'velocity': velocity,
+                     'canvasDimensions': canvasDimensions,
+                     'range': 30,
+                     'movementFuns': [flockVector, arenaVector],
+                     //'movementFuns': [flockVector],
+                     'ctx': ctx};
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return animateBoids(drawBoid, world);
       }
 
       function canvasClick(event){
         var canvas = document.getElementById("canvas1");
         var x = event.pageX - canvas.offsetLeft;
         var y = event.pageY - canvas.offsetTop;
+        log("Adding boid at " + x + "," + y);
         addBoid({'x': x, 'y': y});
       }
     </script>
@@ -22,10 +60,13 @@
   <body onload="runTests();">
     <div id="testResults">&lt;no test results&gt;</div>
     <br>
-    Text
+    <button id="go" onclick="go();">Go!</button>
+    <button id="stop" onclick="stop();">Stop</button>
+    <button id="clearLog" onclick="clearLog();">Clear</button>
+    <input type=checkbox id="shouldLog" value="log?">Log?</input>
+    Velocity: <input type="text" id="velocity" value="5">
     <br>
-    <button id="addBoid" onclick="addBoid()">Add Boid</button>
-    <button id="addBoid" onclick="go()">Go!</button>
+    <textarea id="log" style="border:1px solid black; width:900px; height:100px"></textarea>
     <br>
     <canvas id="canvas1" width="600" height="600" style="border:1px solid black;" onclick="canvasClick(event);"></canvas>
   </body>

@@ -3,6 +3,10 @@
 function getTests(){
   var tests = [];
   tests = tests.concat(getArenaTests());
+  tests = tests.concat(getGeometryTests());
+  tests = tests.concat(getFunTests());
+  tests = tests.concat(getFlockTests());
+  tests = tests.concat(getBoidsTests());
   document.getElementById("testResults").innerHTML = "found " + tests.length + " tests";
   return tests;
 }
@@ -23,11 +27,12 @@ function runTests(tests, results){
   try{
     result = tests[0].call(null);
   }catch(err){
-    result = tests[0].toString().split("(")[0] + " caused error: " + err.message;
+    result = tests[0].toString().split("(")[0] + " caused error: " + err.message + " (" + err.lineNumber + ")";
   }
   var newResults = results.slice(0);
   if(result != true){
-    newResults.push(result);
+    //newResults.push(result);
+    newResults.push(tests[0].toString().split("(")[0] + ": " + result);
   }
   return runTests(tests.slice(1), newResults);
 }
@@ -65,14 +70,6 @@ function arraysEqual(array1, array2){
   }else{
     return false;
   }
-}
-
-function pointsEqual(point1, point2){
-  return point1.x == point2.x && point1.y == point2.y;
-}
-
-function pointToString(point){
-  return "{" + point.x + "," + point.y + "}";
 }
 
 function randomInt(min, max){

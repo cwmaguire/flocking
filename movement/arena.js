@@ -6,20 +6,23 @@ var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft
                   [outTopMiddle, midTopRight, midMidRight, midBottomRight, outBottomMiddle],
                   [outTopRight, outMidRight, outMidRight, outMidRight, outBottomRight]];
 
-function arenaVector(point, dimensions){
+function arenaVector(world){
   var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
-  var regionPoint = regionCoords(point, dimensions, columnPercentages, rowPercentages);
+  //log("\n" + worldToString(world));
+  var regionPoint = regionCoords(world, columnPercentages, rowPercentages);
   var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
-  return regionFuns[regionPoint.x][regionPoint.y].call(null, point);
+  return regionFuns[regionPoint.x][regionPoint.y].call(null, world);
 }
 
 
-function regionCoords(point, dimensions, columnPercentages, rowPercentages){
-  var columnEndPoints = percentsToEndPoints(dimensions.w, columnPercentages);
-  var rowEndPoints = percentsToEndPoints(dimensions.h, rowPercentages);
-  return {'x': regionRowOrColumn(point.x, columnEndPoints),
-          'y': regionRowOrColumn(point.y, rowEndPoints)};
+function regionCoords(world, columnPercentages, rowPercentages){
+  var w = world.canvasDimensions.w;
+  var h = world.canvasDimensions.h;
+  var columnEndPoints = percentsToEndPoints(w, columnPercentages);
+  var rowEndPoints = percentsToEndPoints(h, rowPercentages);
+  return {'x': regionRowOrColumn(world.boid.location.x, columnEndPoints),
+          'y': regionRowOrColumn(world.boid.location.y, rowEndPoints)};
 }
 
 function sizes(totalSize, percentages){
@@ -73,59 +76,59 @@ function regionRowOrColumn(xOrY, rowOrColEndPoints, rowOrColNum){
 
 // Outside box, from top left counter-clockwise
 // to top middle
-function outTopLeft(point){ return down(point); }
+function outTopLeft(world){ return down(world); }
 
-function outMidLeft(point){ return down(point); }
+function outMidLeft(world){ return down(world); }
 
-function outBottomLeft(point){ return right(point); }
+function outBottomLeft(world){ return right(world); }
 
-function outBottomMiddle(point){ return right(point); }
+function outBottomMiddle(world){ return right(world); }
 
-function outBottomRight(point){ return up(point); }
+function outBottomRight(world){ return up(world); }
 
-function outMidRight(point){ return up(point); }
+function outMidRight(world){ return up(world); }
 
-function outTopRight(point){ return left(point); }
+function outTopRight(world){ return left(world); }
 
-function outTopMiddle(point){ return left(point); }
+function outTopMiddle(world){ return left(world); }
 
 // Middle box, from top left counter-clockwise
 // to top middle
-function midTopLeft(point){ return left(point); }
+function midTopLeft(world){ return left(world); }
 
-function midMidLeft(point){ return left(point); }
+function midMidLeft(world){ return left(world); }
 
-function midBottomLeft(point){ return down(point); }
+function midBottomLeft(world){ return down(world); }
 
-function midBottomMiddle(point){ return down(point); }
+function midBottomMiddle(world){ return down(world); }
 
-function midBottomRight(point){ return right(point); }
+function midBottomRight(world){ return right(world); }
 
-function midMidRight(point){ return right(point); }
+function midMidRight(world){ return right(world); }
 
-function midTopRight(point){ return up(point); }
+function midTopRight(world){ return up(world); }
 
-function midTopMiddle(point){ return up(point); }
+function midTopMiddle(world){ return up(world); }
 
 // The center box
-function center(point){ return up(point); }
+function center(world){ return up(world); }
 
-function up(point){
-  return {'x': point.x,
-          'y': point.y - 5};
+function up(world){
+  return {'x': world.boid.location.x,
+          'y': world.boid.location.y - world.velocity};
 }
 
-function down(point){
-  return {'x': point.x,
-          'y': point.y + 5};
+function down(world){
+  return {'x': world.boid.location.x,
+          'y': world.boid.location.y + world.velocity};
 }
 
-function left(point){
-  return {'x': point.x - 5,
-          'y': point.y};
+function left(world){
+  return {'x': world.boid.location.x - world.velocity,
+          'y': world.boid.location.y};
 }
 
-function right(point){
-  return {'x': point.x + 5,
-          'y': point.y};
+function right(world){
+  return {'x': world.boid.location.x + world.velocity,
+          'y': world.boid.location.y};
 }
