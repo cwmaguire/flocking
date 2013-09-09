@@ -1,46 +1,56 @@
 "use strict";
 
-function flockVector(boid, neighbourBoids, flockBehaviours){
-  var boidDistances = findNeighboursInRange(boid.location,
-                                            neighbourBoids,
-                                            flockBehaviours.range);
-  log("boid.location = " + pointToString(boid.location));
-  log("boidDistances[0] = " + pointToString(boidDistances[0]));
-  log("boidDistances = " + boidDistances.toString());
-  log("flockBehaviours.range = " + flockBehaviours.range);
-  var adjustmentsToNeighbours = adjustToNeighbours(boid.location,
-                                                   boidDistances,
-                                                   flockBehaviours.range);
-  log("adjustmentsToNeighbours is " + adjustmentsToNeighbours.toString());
+function flockVector(world){
+  var boidDistances = findNeighboursInRange(world);
+  log(boidDistancesToString(boidDistances));
+  //log("found distances: " + boidDistances.length);
+  //log("found distances: " + boidDistances[0].distance);
+  //log("found distances: " + pointToString(boidDistances[0].boid.location));
+  //log("found distances: " + boidDistances[1].distance);
+  //log("found distances: " + pointToString(boidDistances[1].boid.location));
+  var adjustmentsToNeighbours = adjustToNeighbours(world, boidDistances);
+  //log("found adjustments: " + pointToString(adjustmentsToNeighbours[0]));
   var aggregatedAdjustment = aggregateAdjustments(adjustmentsToNeighbours,
-                                                  flockBehaviours.velocity);
+                                                  world);
+  //log("aggregatedAdjustment = " + pointToString(aggregatedAdjustment));
   return aggregatedAdjustment;
 }
 
-function findNeighboursInRange(point, allBoids, range, boidDistances){
+function findNeighboursInRange(world, boidDistances){
+  //log("finding neighbours in range");
   if(boidDistances === undefined){
+    //log("boidDistances is undefined");
     boidDistances = [];
   }
 
-  if(allBoids.length == 0){
+  if(world.boids.length == 0){
+   // log("world.boids.length == 0");
     return boidDistances.slice(0);
   }
 
   var newBoidDistances = boidDistances.slice(0);
 
-  //log("Calling distance (flock.js:28) with " + pointToString(point) + " and " + pointToString(allBoids[0].location));
+  //log("getting distance to boid ...");
 
-  var distanceToBoid = distance(point, allBoids[0].location) 
+  var distanceToBoid = distance(world.boid.location,
+                                world.boids[0].location) 
 
-  if(distanceToBoid < range){
-    newBoidDistances.push({'boid': copyBoid(allBoids[0]),
+  //log("distanceToBoid = " + distanceToBoid);
+
+  if(distanceToBoid < world.range){
+    newBoidDistances.push({'boid': copyBoid(world.boids[0]),
                            'distance': distanceToBoid});
   }
 
-  return findNeighboursInRange(point, allBoids.slice(1), range, newBoidDistances);
+  var restOfWorld = changeWorldBoids(world.boid,
+                                     world.boids.slice(1),
+                                     [],
+                                     world);
+
+  return findNeighboursInRange(restOfWorld, newBoidDistances);
 }
 
-function adjustToNeighbours(point, boidDistances, range, adjustments){
+function adjustToNeighbours(world, boidDistances, adjustments){
   if(adjustments === undefined){
     adjustments = [];
   }
@@ -49,46 +59,50 @@ function adjustToNeighbours(point, boidDistances, range, adjustments){
     return adjustments.slice(0);
   }
 
-  var adjustment = adjustToNeighbour(point, boidDistances[0], range);
+  var adjustment = adjustToNeighbour(world, boidDistances[0]);
+  //log("adjustment: " + pointToString(adjustment));
   var newAdjustments = adjustments.slice(0);
   newAdjustments.push(adjustment);
-  return adjustToNeighbours(point, boidDistances.slice(1), range, newAdjustments);
+  return adjustToNeighbours(world, boidDistances.slice(1), newAdjustments);
 }
 
-function adjustToNeighbour(point, neighbourBoidAndDistance, range){
+function adjustToNeighbour(world, neighbourBoidAndDistance){
   var neighbour = neighbourBoidAndDistance.boid;
   var distance = neighbourBoidAndDistance.distance;
 
-  var necessarySpace = range - distance;
+  var necessarySpace = world.range - distance;
+  //log("necessarySpace = " + necessarySpace);
   var pctOfDistReq = necessarySpace / distance;
+  //log("pctOfDistReq = " + pctOfDistReq);
 
-  var xDistance = point.x - neighbour.location.x;
-  var yDistance = point.y - neighbour.location.y;
+  //log("world.boid.location.x = " + world.boid.location.x);
+
+  var xDistance = world.boid.location.x - neighbour.location.x;
+  var yDistance = world.boid.location.y - neighbour.location.y;
+
+  //log("xDistance = " + xDistance + ", yDistance = " + yDistance);
 
   var oppositeXDistance = Math.round(xDistance * pctOfDistReq);
   var oppositeYDistance = Math.round(yDistance * pctOfDistReq);
 
-  return {'x': point.x + oppositeXDistance,
-          'y': point.y + oppositeYDistance};
+  return {'x': world.boid.location.x + oppositeXDistance,
+          'y': world.boid.location.y + oppositeYDistance};
 }
 
-function aggregateAdjustments(adjustments, velocity){
-  log("adjustments[0] is " + pointToString(adjustments[0]));
+function aggregateAdjustments(adjustments, world){
+  if(adjustments.length == 0){
+    return world.boid.location;
+  }
   var xs = reduce(sum, map(getX, adjustments)); 
   var ys = reduce(sum, map(getY, adjustments)); 
-
-  log("xs = " + xs.toString());
-  log("ys = " + ys.toString());
-
   var avgX = Math.round(xs / adjustments.length);
   var avgY = Math.round(ys / adjustments.length);
 
-  log("Calling distance (flock.js:78) with 0,0 and " + avgX + "," + avgY);
-  var adjustmentDistance = distance({'x': 0, 'y': 0}, {'x': avgX, 'y': avgY});
-  if(adjustmentDistance > velocity){
-    return proportionateAdjustment({'x': avgX, 'y': avgY}, velocity / adjustmentDistance);
+  var adjustmentDistance = distance(point(0, 0), point(avgX, avgY));
+  if(adjustmentDistance > world.velocity){
+    return proportionateAdjustment(point(avgX, avgY), world.velocity / adjustmentDistance);
   }else{
-    return {'x': avgX, 'y': avgY};
+    return point(avgX, avgY);
   }
 }
 
@@ -107,4 +121,17 @@ function getX(obj){
 
 function getY(obj){
   return obj['y'];
+}
+
+function boidDistancesToString(boidDistances){
+  var boidDistString = reduce(function(bdString, accumString){
+                                return accumString + "\n  " + bdString;
+                              },
+                              map(boidDistanceToString, boidDistances));
+  return "boid distances: [\n  " + boidDistString + "\n]\n";
+}
+
+function boidDistanceToString(boidDistance){
+  return boidToString(boidDistance.boid) +
+         ", distance = " + boidDistance.distance;
 }
