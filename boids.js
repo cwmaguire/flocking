@@ -1,106 +1,122 @@
 "use strict";
 
-function animate(boids, velocity){
-  //log("animating " + boids.length + " boids");
-  var canvas = document.getElementById("canvas1");
-  var ctx = canvas.getContext("2d");
-  var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function animateBoids(drawBoidFun, world){
+  //log("animateBoids\n" + worldToString(world));
+  if(world.boid == undefined){
+    return world.movedBoids;
+  }else{
+    var movedBoid = moveBoid(world);
+    log("\nmovedBoid\n" + boidToString(movedBoid) + "\n\n");
+    drawBoidFun.call(null, movedBoid, world);
 
-  var world = {'boids': boids.slice(0),
-               'velocity': velocity,
-               'canvasDimensions': canvasDimensions,
-               'range', 10};
-
-  return animateBoids(drawBoidFun(ctx), world, []);
-}
-
-function changeWorldBoids(boids, world){
-  return newWorld(boids, world.velocity, canvasDimensions, range);
-
-function newWorld(boids, velocity, canvasDimensions, range){
-  return {'boids': boids,
-          'velocity': velocity,
-          'canvasDimensions': canvasDimensions,
-          'range': range};
-
-function drawBoidFun(ctx){
-  function(boid){
-    drawBoid(ctx, boid);
+    var movedWorld = shiftBoids(world, movedBoid);
+    //log("shifted boids");
+    log("moved world\n" + worldToString(movedWorld));
+    return animateBoids(drawBoidFun, movedWorld);
   }
 }
 
-function animateBoids(drawBoidFun, world, animatedBoids){
-  if(boidsToAnimate.length == 0){
-    return animatedboids;
-  }else{
-    if(animatedBoids === undefined){
-      animatedBoids = [];
-    }
-
-    var movedBoid = moveBoid(world, animatedBoids);
-
-    drawBoidFun(newBoid);
-
-    var newAnimatedBoids = animatedBoids.slice(0);
-    newAnimatedBoids.push(newBoid);
-    return animateBoids(ctx, boids.slice(1), newAnimatedBoids);
-  }else{
-    return animatedBoids;
-  }
-}
-
-function combinePoints(startPoint, endPoints, velocity){
-  var pointDifferences = pointsRelativeTo(startPoint, endPoints);
-  var totalX = reduce(sum, map(getX, pointDifferences)); 
-  var totalY = reduce(sum, map(getY, pointDifferences)); 
-  log("Calling distance with " + pointToString(startPoint) + " and {" + totalX + "," + totalY + "}");
-  var totalDistance = distance(startPoint,
-                               {'x': totalX, 'y': totalY});
-  var percentPossible = Math.min(1, velocity / totalDistance);
-  var possibleX = Math.round(totalX * percentPossible);
-  var possibleY = Math.round(totalY * percentPossible);
-  return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
-}
-
-function moveBoid(world, movedBoids){
-  var boid = world.boids[0];
-  var worldBoids = world.boids.slice(1).concatenate(movedBoids);
-  var newWorld = changeWorldBoids(worldBoids, world);
-
+function moveBoid(world){
   var applyMovementFun = function(movementFun){
-                             movementFun.call(null, newWorld);
+                             //log("calling applyMovementFun " +
+                             //    "with " + movementFun.toString().split("(")[0]);
+                             return movementFun.call(null, world);
                          };
 
-  var movementPoints = map(applyMovementFun, [arenaVector, flockVector]);
+  //log("movementFun: " + world.movementFuns[0].toString().split("(")[0]);
 
-  var newPoint = combinePoints(boid.point, [arenaPoint, flockPoint]);
-  var movedBoid = copyBoid(boid);
-  movedBoid.location = vector;
+  var movementPoints = map(applyMovementFun, world.movementFuns);
+
+  //log("movementPoints.length = " + movementPoints.length);
+  //log("movementPoints[0] = " + movementPoints[0]);
+
+  log("movementPoints: " + pointToString(movementPoints[0]));
+
+  var newPoint = combinePoints(world, movementPoints);
+  //log("newPoint = " + pointToString(newPoint));
+  var movedBoid = copyBoid(world.boid);
+  //log("moveBoid copied boid");
+  movedBoid.location = newPoint;
+
   return movedBoid;
 }
 
+function shiftBoids(world, movedBoid){
+  var boids = world.boids.slice(1);
+  var movedBoids = world.movedBoids.slice(0);
+  var boid = undefined; // in case there's no more boids
+  if(world.boids.length > 0){
+    boid = copyBoid(world.boids[0]);
+  }
+  //log("shiftBoids: movedBoid: " + pointToString(movedBoid.location));
+  movedBoids.push(copyBoid(movedBoid));
+  return changeWorldBoids(boid, boids, movedBoids, world);
+}
+
+function changeWorldBoids(boid, boids, movedBoids, world){
+  return newWorld(boid,
+                  boids,
+                  movedBoids,
+                  world.velocity,
+                  world.canvasDimensions,
+                  world.range,
+                  world.movementFuns,
+                  world.ctx);
+}
+
+function newWorld(boid, boids, movedBoids, velocity, canvasDimensions, range, movementFuns, ctx){
+  return {'boid': boid,
+          'boids': boids,
+          'movedBoids': movedBoids,
+          'velocity': velocity,
+          'canvasDimensions': canvasDimensions,
+          'movementFuns': movementFuns,
+          'range': range,
+          'ctx': ctx};
+}
+
+function lastMovedBoid(world){
+  var movedBoids = world.movedBoids;
+  return movedBoids[movedBoids.length - 1];
+}
+
+function combinePoints(world, endPoints){
+  //log("combinePoints " + pointToString(endPoints[0]));
+  var startPoint = world.boid.location;
+  var velocity = world.velocity;
+  var pointDifferences = pointsRelativeTo(startPoint, endPoints);
+  var totalX = reduce(sum, map(getX, pointDifferences)); 
+  var totalY = reduce(sum, map(getY, pointDifferences)); 
+  //log("totalX: " + totalX + ", totalY: " + totalY);
+  var totalDistance = distance(point(0,0),
+                               {'x': totalX, 'y': totalY});
+  //log("totalDistance: " + totalDistance);
+  var percentPossible = Math.min(1, velocity / totalDistance);
+  //log("% pos: " + percentPossible);
+  var possibleX = Math.round(totalX * percentPossible);
+  var possibleY = Math.round(totalY * percentPossible);
+  //log("returning from combinePoints");
+  return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
+}
+
 function copyBoid(boid){
+  //log("copyBoid with " + pointToString(boid.location));
   return {'location': boid.location, 'radius': boid.radius};
 }
 
-function addBoid(point){
-  //log("boids is " + boids + " and length is " + boids.length);
-  boids.push({'location': point, 'radius': 10});
+function addBoid(location){
+  boids.push(newBoid(location, 10));
 }
 
-function boid(location, radius){
+function newBoid(location, radius){
   return {'location': location, 'radius': radius};
+}
 
-function drawBoid(ctx, boid){
-
-  //log("Drawing boid at ...");
-
+function drawBoid(boid, world){
   var x = boid.location.x;
   var y = boid.location.y;
   var r = boid.radius;
-
-  //log("... " + x + ", " + y + " with radius " + r);
+  var ctx = world.ctx;
 
   ctx.fillStyle = "#000000";
   ctx.beginPath();
@@ -110,4 +126,42 @@ function drawBoid(ctx, boid){
   ctx.lineTo(x + r * 0.7, y - (0.6 * r)),
 
   ctx.fill();
+}
+
+function boidToString(boid){
+  if(boid == undefined){
+    return "nil";
+  }
+  var location = "nil";
+  if(boid.location != undefined){
+    location = pointToString(boid.location);
+  }
+  return "boid: location = " + location + ", radius = " + boid.radius;
+}
+
+function boidsToString(field, boids){
+  return field + ": [\n  " +
+         reduce(function(boidString, accumString){
+                  return accumString + "\n  " + boidString;
+                },
+                map(boidToString, boids)) +
+         "\n]\n";
+}
+
+function worldToString(world){
+  var w = "nil";
+  var h = "nil";
+  if(world.canvasDimensions != undefined){
+    w = world.canvasDimensions.w;
+    h = world.canvasDimensions.h;
+  }
+
+  var boidString = boidToString(world.boid);
+  var boidsString = boidsToString("boids", world.boids);
+  var movedBoidsString = boidsToString("movedBoids", world.movedBoids);
+  return "world:\n" + boidString + "\n" + boidsString + movedBoidsString +
+         "velocity: " + world.velocity + "\n" +
+         "dimensions: {" + w + "," + h + "}\n" +
+         "range: " + world.range + "\n" +
+         "ctx: " + world.ctx;
 }
