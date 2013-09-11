@@ -23,11 +23,11 @@ addGeometryTest(testDistance);
 
 function testPointsRelativeTo(){
   var referencePoint = point(10,10);
-  var absolutePoints = [point(8,12),
-                        point(12,8),
-                        point(10,10)];
+  var absolutePointWeights = [newPointWeight(point(8,12), 1),
+                              newPointWeight(point(12,8), 1),
+                              newPointWeight(point(10,10), 1)];
 
-  var result = pointsRelativeTo(referencePoint, absolutePoints);
+  var result = pointsRelativeTo(referencePoint, absolutePointWeights);
 
   var expectedResults = [point(-2,2), point(2,-2), point(0,0)];
 

@@ -1,41 +1,31 @@
 "use strict";
 
 function animateBoids(drawBoidFun, world){
-  //log("animateBoids\n" + worldToString(world));
   if(world.boid == undefined){
     return world.movedBoids;
   }else{
     var movedBoid = moveBoid(world);
-    log("\nmovedBoid\n" + boidToString(movedBoid) + "\n\n");
+    //log("\nmovedBoid\n" + boidToString(movedBoid) + "\n\n");
     drawBoidFun.call(null, movedBoid, world);
 
     var movedWorld = shiftBoids(world, movedBoid);
-    //log("shifted boids");
-    log("moved world\n" + worldToString(movedWorld));
+    //log("moved world\n" + worldToString(movedWorld));
     return animateBoids(drawBoidFun, movedWorld);
   }
 }
 
 function moveBoid(world){
-  var applyMovementFun = function(movementFun){
-                             //log("calling applyMovementFun " +
-                             //    "with " + movementFun.toString().split("(")[0]);
-                             return movementFun.call(null, world);
+  var applyMovementFun = function(movement){
+                             return {'point': movement.fun.call(null, world),
+                                     'weight': movement.weight};
                          };
 
-  //log("movementFun: " + world.movementFuns[0].toString().split("(")[0]);
+  var pointWeights = map(applyMovementFun, world.movements);
 
-  var movementPoints = map(applyMovementFun, world.movementFuns);
+  //log("movementPoints: " + pointToString(movementPoints[0]));
 
-  //log("movementPoints.length = " + movementPoints.length);
-  //log("movementPoints[0] = " + movementPoints[0]);
-
-  log("movementPoints: " + pointToString(movementPoints[0]));
-
-  var newPoint = combinePoints(world, movementPoints);
-  //log("newPoint = " + pointToString(newPoint));
+  var newPoint = combineMovements(world, pointWeights);
   var movedBoid = copyBoid(world.boid);
-  //log("moveBoid copied boid");
   movedBoid.location = newPoint;
 
   return movedBoid;
@@ -48,7 +38,6 @@ function shiftBoids(world, movedBoid){
   if(world.boids.length > 0){
     boid = copyBoid(world.boids[0]);
   }
-  //log("shiftBoids: movedBoid: " + pointToString(movedBoid.location));
   movedBoids.push(copyBoid(movedBoid));
   return changeWorldBoids(boid, boids, movedBoids, world);
 }
@@ -80,27 +69,32 @@ function lastMovedBoid(world){
   return movedBoids[movedBoids.length - 1];
 }
 
-function combinePoints(world, endPoints){
-  //log("combinePoints " + pointToString(endPoints[0]));
+function combineMovements(world, pointWeights){
   var startPoint = world.boid.location;
   var velocity = world.velocity;
-  var pointDifferences = pointsRelativeTo(startPoint, endPoints);
-  var totalX = reduce(sum, map(getX, pointDifferences)); 
-  var totalY = reduce(sum, map(getY, pointDifferences)); 
-  //log("totalX: " + totalX + ", totalY: " + totalY);
-  var totalDistance = distance(point(0,0),
-                               {'x': totalX, 'y': totalY});
-  //log("totalDistance: " + totalDistance);
+  var pointWeightDiffs = pointsRelativeTo(startPoint, pointWeights);
+  var totalX = reduce(sum, map(getPointWeightX, pointWeightDiffs));
+  var totalY = reduce(sum, map(getPointWeightY, pointWeightDiffs));
+  var combinedPoint = combinePoints(pointWeightDiffs);
+  var totalDistance = distance(point(0,0), combinedPoint);
   var percentPossible = Math.min(1, velocity / totalDistance);
-  //log("% pos: " + percentPossible);
+  var weightedPointDiffs = weightPointDiffs(pointWeightDiffs, percentPossible);
   var possibleX = Math.round(totalX * percentPossible);
   var possibleY = Math.round(totalY * percentPossible);
-  //log("returning from combinePoints");
   return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
 }
 
+function combinePoints(pointWeights){
+  return point(reduce(sum, map(getPointWeightX, pointWeights)),
+               reduce(sum, map(getPointWeightY, pointWeights)));
+
+function weightPointDiffs(pointWeightDiffs, percent){
+  var pointWeights = applyPercentage(pointWeights, percent)
+  return point(reduce(sum, map(getWeightedX, pointWeights)),
+               reduce(sum, map(getWeightedY, pointWeights)));
+}
+
 function copyBoid(boid){
-  //log("copyBoid with " + pointToString(boid.location));
   return {'location': boid.location, 'radius': boid.radius};
 }
 

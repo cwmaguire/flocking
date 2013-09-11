@@ -39,8 +39,9 @@
                      'movedBoids': [],
                      'velocity': velocity,
                      'canvasDimensions': canvasDimensions,
-                     'range': 30,
-                     'movementFuns': [flockVector, arenaVector],
+                     'range': 10,
+                     'movements': [{'fun': flockVector, 'weight': 0.7},
+                                   {'fun': arenaVector, 'weight': 0.3}],
                      //'movementFuns': [flockVector],
                      'ctx': ctx};
 
