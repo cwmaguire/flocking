@@ -4,33 +4,30 @@ function point(x, y){
   return {'x': x, 'y': y};
 }
 
-function newPointWeight(point, weight){
-  return {'point': point, 'weight': weight};
+function newPointScale(point, scale){
+  return {'point': point, 'scale': scale};
 }
 
-function getPointWeightX(pointWeight){
-  return pointWeight.point.x;
+function getPointScaleX(pointScale){
+  return pointScale.point.x;
 }
 
-function getWeightedX(pointWeight){
-  return pointWeight.point.x * pointWeight.weight;
+function getScaledX(pointScale){
+  return pointScale.point.x * pointScale.scale;
 }
 
-function getWeightedY(pointWeight){
-  return pointWeight.point.y * pointWeight.weight;
+function getScaledY(pointScale){
+  return pointScale.point.y * pointScale.scale;
 }
 
-function getPointWeightY(pointWeight){
-  return pointWeight.point.y;
+function getPointScaleY(pointScale){
+  return pointScale.point.y;
 }
 
-function applyPercentage(pointWeights, percent){
-  var applyPercentage_ = function(pointWeight){
-    return newPointWeight(pointWeight.point, pointWeight.weight * percent);
-  };
-
-  return map(applyPercentage_, pointWeights);
+function getPointScaleScale(pointScale){
+  return pointScale.scale;
 }
+
 
 function distance(p1, p2){
   var a = Math.abs(p1.x - p2.x);
@@ -48,14 +45,16 @@ function pointToString(point){
   return "{" + point.x + "," + point.y + "}";
 }
 
-function pointsRelativeTo(referencePoint, absolutePointWeights){
-  var fun = function(absolutePointWeight){
-    var absolutePoint = absolutePointWeight.point;
-    var weight = absolutePointWeight.weight;
+function scaledRelativePoints(referencePoint, absolutePointScales){
+  var fun = function(absolutePointScale){
+    var absolutePoint = absolutePointScale.point;
+    var scale = absolutePointScale.scale;
     var relativeX = absolutePoint.x - referencePoint.x;
     var relativeY = absolutePoint.y - referencePoint.y;
-    return newPointWeight(point(relativeX, relativeY), weight);
+    var scaledX = relativeX * absolutePointScale.scale;
+    var scaledY = relativeY * absolutePointScale.scale;
+    return point(scaledX, scaledY);
   }
 
-  return map(fun, absolutePoints);
+  return map(fun, absolutePointScales);
 }

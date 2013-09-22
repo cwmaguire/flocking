@@ -40,9 +40,8 @@
                      'velocity': velocity,
                      'canvasDimensions': canvasDimensions,
                      'range': 10,
-                     'movements': [{'fun': flockVector, 'weight': 0.7},
-                                   {'fun': arenaVector, 'weight': 0.3}],
-                     //'movementFuns': [flockVector],
+                     'movements': [{'fun': flockVector, 'scale': 2.2},
+                                   {'fun': arenaVector, 'scale': 1.0}],
                      'ctx': ctx};
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);

@@ -17,14 +17,14 @@ function animateBoids(drawBoidFun, world){
 function moveBoid(world){
   var applyMovementFun = function(movement){
                              return {'point': movement.fun.call(null, world),
-                                     'weight': movement.weight};
+                                     'scale': movement.scale};
                          };
 
-  var pointWeights = map(applyMovementFun, world.movements);
+  var pointScales = map(applyMovementFun, world.movements);
 
   //log("movementPoints: " + pointToString(movementPoints[0]));
 
-  var newPoint = combineMovements(world, pointWeights);
+  var newPoint = combineMovements(world, pointScales);
   var movedBoid = copyBoid(world.boid);
   movedBoid.location = newPoint;
 
@@ -69,29 +69,26 @@ function lastMovedBoid(world){
   return movedBoids[movedBoids.length - 1];
 }
 
-function combineMovements(world, pointWeights){
+function combineMovements(world, pointScales){
   var startPoint = world.boid.location;
   var velocity = world.velocity;
-  var pointWeightDiffs = pointsRelativeTo(startPoint, pointWeights);
-  var totalX = reduce(sum, map(getPointWeightX, pointWeightDiffs));
-  var totalY = reduce(sum, map(getPointWeightY, pointWeightDiffs));
-  var combinedPoint = combinePoints(pointWeightDiffs);
-  var totalDistance = distance(point(0,0), combinedPoint);
-  var percentPossible = Math.min(1, velocity / totalDistance);
-  var weightedPointDiffs = weightPointDiffs(pointWeightDiffs, percentPossible);
-  var possibleX = Math.round(totalX * percentPossible);
-  var possibleY = Math.round(totalY * percentPossible);
-  return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
+  var points = scaledRelativePoints(startPoint, pointScales);
+  var totalPoint = reduce(sumPoints, points);
+  var constrainedPoint = constrainDist(totalPoint, velocity);
+  return point(constrainedPoint.x + startPoint.x,
+               constrainedPoint.y + startPoint.y);
 }
 
-function combinePoints(pointWeights){
-  return point(reduce(sum, map(getPointWeightX, pointWeights)),
-               reduce(sum, map(getPointWeightY, pointWeights)));
+function constrainDist(point1, velocity){
+  var dist = distance(point(0, 0), point1);
+  var fractionAllowed = Math.min(velocity, dist) / dist;
+  return point(point1.x * fractionAllowed,
+               point1.y * fractionAllowed);
+}
 
-function weightPointDiffs(pointWeightDiffs, percent){
-  var pointWeights = applyPercentage(pointWeights, percent)
-  return point(reduce(sum, map(getWeightedX, pointWeights)),
-               reduce(sum, map(getWeightedY, pointWeights)));
+function sumPoints(point1, point2){
+  return point(point1.x + point2.x,
+               point1.y + point2.y);
 }
 
 function copyBoid(boid){

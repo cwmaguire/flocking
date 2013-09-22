@@ -29,7 +29,7 @@ addBoidsTest(function testAnimateBoids(){
                'boids': [],
                'movedBoids': [],
                'velocity': 10,
-               'movementFuns': [movementFun]};
+               'movements': [{'fun': movementFun, 'scale': 1.0}]};
 
   var movedBoids = animateBoids(drawFun, world);
 
@@ -41,13 +41,14 @@ addBoidsTest(function testAnimateBoids(){
   }
 });
 
-function testMoveBoid(){
+addBoidsTest(function testMoveBoid(){
   var boid = newBoid(point(10,10), 10);
   var testWorld = newWorld(boid);
   var testFun1 = function(world){return point(12, 10);};
   var testFun2 = function(world){return point(10, 8);};
   testWorld.velocity = 10;
-  testWorld.movementFuns = [testFun1, testFun2];
+  testWorld.movements = [{'fun': testFun1, 'scale': 1.0},
+                         {'fun': testFun2, 'scale': 1.0}];
   var movedBoid = moveBoid(testWorld);
   var x = movedBoid.location.x;
   var y = movedBoid.location.y;
@@ -57,10 +58,9 @@ function testMoveBoid(){
   }else{
     return true;
   }
-}
-addBoidsTest(testMoveBoid);
+});
 
-function testShiftBoids(){
+addBoidsTest(function testShiftBoids(){
   var boid1 = newBoid(point(0,0), 0);
   var boid2 = newBoid(point(1,1), 1);
   var world = {'boid': 4,
@@ -83,8 +83,7 @@ function testShiftBoids(){
   }else{
     return true;
   }
-}
-addBoidsTest(testLastMovedBoid);
+});
 
 addBoidsTest(function testChangeWorldBoids(){
   var world = {'boid': 1,
@@ -127,7 +126,7 @@ addBoidsTest(function testNewWorld(){
 });
 
 
-function testLastMovedBoid(){
+addBoidsTest(function testLastMovedBoid(){
   var world = {'movedBoids': [0, 1, 2]};
   var result = lastMovedBoid(world);
   if(result != 2){
@@ -135,27 +134,67 @@ function testLastMovedBoid(){
   }else{
     return true;
   }
-}
-addBoidsTest(testLastMovedBoid);
+});
 
-function testCombinePoints(){
+addBoidsTest(function testCombineMovements(){
   var startPoint = point(10, 10);
-  var endPoints = [point(13, 14), point(13, 14)];
+  var pointScale1 = newPointScale(point(14, 13), 2.0);
+  var pointScale2 = newPointScale(point(8, 8), 1.0);
+  var pointScales = [pointScale1, pointScale2];
   var world = newWorld(newBoid(startPoint));
   world.velocity = 20;
 
-  var result = combinePoints(world, endPoints);
+  var result = combineMovements(world, pointScales);
 
-  if(!pointsEqual(point(16,18), result)){
-    return "10,10 should move 6 right and 8 down to 16,18 but went to " +
+  if(!pointsEqual(point(16,14), result)){
+    return "10,10 should move 6 right and 4 up to 16,14 but went to " +
            pointToString(result) + " instead.";
+  }
+
+  var pointScale3 = newPointScale(point(6, 7), 1.0);
+  var world2 = newWorld(newBoid(startPoint));
+  world2.velocity = 2.5;
+
+  var result2 = combineMovements(world2, [pointScale1, pointScale3]);
+
+  if(!pointsEqual(point(12, 11.5), result2)){
+    return "10,10 should move 4 left but 8 right (for 4 right total) " +
+           "and 3 up but 6 down (for 3 down total), which would put it " +
+           "at 14,13 except it's constrained by a 2.5 velocity, (where 14,13 " +
+           "would be a 5 velocity) which puts it at 12,11.5; however, it was at " +
+           pointToString(result) + " instead.";
+  }
+
+  return true;
+});
+
+addBoidsTest(function constrainDistTest(){
+  var p = point(6,8);
+  var velocity = 5;
+  var result = constrainDist(p, velocity);
+
+  if(!pointsEqual(point(3,4), result)){
+    return "Distance of 6,8 is 10 and should be cut in half " + 
+           "to 3,4 but was " + pointToString(result);
   }else{
     return true;
   }
-}
-addBoidsTest(testCombinePoints);
+});
 
-function testCopy(){
+addBoidsTest(function sumPointsTest(){
+  var p1 = point(1, 2);
+  var p2 = point(3, 4);
+  var result = sumPoints(p1, p2);
+
+  if(!pointsEqual(point(4,6), result)){
+    return "Points 1,2 and 3,4 should add to 4,6 but the result was " +
+           pointToString(result);
+  }else{
+    return true;
+  }
+});
+
+addBoidsTest(function testCopyBoid(){
   var result = copyBoid({'location': {'x': 10, 'y': 20}, 'radius': 50});
   var location = result.location;
   var radius = result.radius;
@@ -166,10 +205,9 @@ function testCopy(){
   }else{
     return true;
   }
-}
-addBoidsTest(testCopy);
+});
 
-function testAddBoid(){
+addBoidsTest(function testAddBoid(){
   var testPoint = point(10, 10);
   boids = [];
   addBoid(testPoint);
@@ -185,8 +223,7 @@ function testAddBoid(){
     boids = [];
     return true;
   }
-}
-addBoidsTest(testAddBoid);
+});
 
 addBoidsTest(function testNewBoid(){
   var boid = newBoid(1,2);
