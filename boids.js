@@ -49,18 +49,18 @@ function changeWorldBoids(boid, boids, movedBoids, world){
                   world.velocity,
                   world.canvasDimensions,
                   world.range,
-                  world.movementFuns,
+                  world.movements,
                   world.ctx);
 }
 
-function newWorld(boid, boids, movedBoids, velocity, canvasDimensions, range, movementFuns, ctx){
+function newWorld(boid, boids, movedBoids, velocity, canvasDimensions, range, movements, ctx){
   return {'boid': boid,
           'boids': boids,
           'movedBoids': movedBoids,
           'velocity': velocity,
           'canvasDimensions': canvasDimensions,
-          'movementFuns': movementFuns,
           'range': range,
+          'movements': movements,
           'ctx': ctx};
 }
 

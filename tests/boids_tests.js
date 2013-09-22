@@ -91,7 +91,8 @@ addBoidsTest(function testChangeWorldBoids(){
                'movedBoids': 3,
                'velocity': 4,
                'canvasDimensions': 5,
-               'range': 6};
+               'range': 6,
+               'movements': [1,2]};
 
   var movedWorld = changeWorldBoids(7, 8, 9, world);
 
@@ -102,6 +103,10 @@ addBoidsTest(function testChangeWorldBoids(){
   if(movedWorld.boid != 7 ||
      movedWorld.boids != 8 ||
      movedWorld.movedBoids != 9 ||
+     movedWorld.velocity != 4 ||
+     movedWorld.canvasDimensions != 5 ||
+     movedWorld.range != 6 ||
+     movedWorld.movements.length != 2 ||
      world == movedWorld){
     return "movedWorld should have new values set and not be the same " +
            "object as the original world."
@@ -111,14 +116,16 @@ addBoidsTest(function testChangeWorldBoids(){
 });
 
 addBoidsTest(function testNewWorld(){
-  var world = newWorld(1,2,3,4,5,6);
+  var world = newWorld(1, 2, 3, 4, 5, 6, 7, 8);
 
   if(world.boid != 1 ||
      world.boids != 2 ||
      world.movedBoids != 3 ||
      world.velocity != 4 ||
      world.canvasDimensions != 5 ||
-     world.range != 6){
+     world.range != 6 ||
+     world.movements != 7 ||
+     world.ctx != 8){
     return "World not created with correct field values";
   }else{
     return true;
