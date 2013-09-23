@@ -32,7 +32,7 @@
         var ctx = canvas.getContext("2d");
         var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
 
-        var velocity = document.getElementById("velocity").value;
+        var velocity = parseInt(document.getElementById("velocity").value);
 
         var world = {'boid': boids[0],
                      'boids': boids.slice(1),
@@ -52,7 +52,7 @@
         var canvas = document.getElementById("canvas1");
         var x = event.pageX - canvas.offsetLeft;
         var y = event.pageY - canvas.offsetTop;
-        log("Adding boid at " + x + "," + y);
+        //log("Adding boid at " + x + "," + y);
         addBoid({'x': x, 'y': y});
       }
     </script>
