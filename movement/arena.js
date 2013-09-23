@@ -9,9 +9,9 @@ var regionFuns = [[outTopLeft, outMidLeft, outMidLeft, outMidLeft, outBottomLeft
 function arenaVector(world){
   var columnPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
   var rowPercentages = [0.15, 0.20, 0.30, 0.20, 0.15];
-  //log("\n" + worldToString(world));
+  //log("Arena Vector: get region point:\n" + worldToString(world));
   var regionPoint = regionCoords(world, columnPercentages, rowPercentages);
-  var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
+  //var regionFun = regionFuns[regionPoint.x][regionPoint.y].toString();
   return regionFuns[regionPoint.x][regionPoint.y].call(null, world);
 }
 
@@ -114,21 +114,25 @@ function midTopMiddle(world){ return up(world); }
 function center(world){ return up(world); }
 
 function up(world){
+  //log("Up, " + world.boid.location.x + ", " + world.boid.location.y + " - " + world.velocity);
   return {'x': world.boid.location.x,
           'y': world.boid.location.y - world.velocity};
 }
 
 function down(world){
+  //log("Down, " + world.boid.location.x + ", " + world.boid.location.y + " + " + world.velocity);
   return {'x': world.boid.location.x,
           'y': world.boid.location.y + world.velocity};
 }
 
 function left(world){
+  //log("Left, " + world.boid.location.x + " - " + world.velocity + ", " + world.boid.location.y);
   return {'x': world.boid.location.x - world.velocity,
           'y': world.boid.location.y};
 }
 
 function right(world){
+  //log("Right, " + world.boid.location.x + " + " + world.velocity + ", " + world.boid.location.y);
   return {'x': world.boid.location.x + world.velocity,
           'y': world.boid.location.y};
 }

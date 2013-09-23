@@ -32,16 +32,16 @@
         var ctx = canvas.getContext("2d");
         var canvasDimensions = {'w': canvas.width, 'h': canvas.height};
 
-        var velocity = document.getElementById("velocity").value;
+        var velocity = parseInt(document.getElementById("velocity").value);
 
         var world = {'boid': boids[0],
                      'boids': boids.slice(1),
                      'movedBoids': [],
                      'velocity': velocity,
                      'canvasDimensions': canvasDimensions,
-                     'range': 30,
-                     'movementFuns': [flockVector, arenaVector],
-                     //'movementFuns': [flockVector],
+                     'range': 10,
+                     'movements': [{'fun': flockVector, 'scale': 2.2},
+                                   {'fun': arenaVector, 'scale': 1.0}],
                      'ctx': ctx};
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -52,7 +52,7 @@
         var canvas = document.getElementById("canvas1");
         var x = event.pageX - canvas.offsetLeft;
         var y = event.pageY - canvas.offsetTop;
-        log("Adding boid at " + x + "," + y);
+        //log("Adding boid at " + x + "," + y);
         addBoid({'x': x, 'y': y});
       }
     </script>

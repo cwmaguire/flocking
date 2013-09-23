@@ -24,7 +24,7 @@ function testFlockVector(){
                        0,
                        5);
 
-  log("test flockVector");
+  //log("test flockVector");
   var result = flockVector(world);
 
   if(!pointsEqual(point(0,1), result)){
@@ -146,10 +146,13 @@ function testAdjustToNeighbour(){
 }
 addFlockTest(testAdjustToNeighbour);
 
+// Test with no adjustments
+// Velocity does not bound adjustments
+
 function testAggregatedAdjustments(){
   var point1 = point(10, 20);
   var point2 = point(20, 40);
-  var world = {'velocity': 100};
+  var world = {'boid': {'location': point(1, 1)}};
 
   var result = aggregateAdjustments([point1, point2], world);
   var expectedPoint = point(15, 30);
@@ -158,11 +161,10 @@ function testAggregatedAdjustments(){
            "returned {15,30}, not " + pointToString(result);
   }
 
-  result = aggregateAdjustments([point1, point2], {'velocity': 10});
-  expectedPoint = point(4, 9); // velocity 10 is about 29% of the distnance 33
-  if(!pointsEqual(result, expectedPoint)){
-    return "testAggregatedAdjustmens [{10,20},{20,40}] should have " +
-           "returned {4,9}, not " + pointToString(result);
+  result = aggregateAdjustments([], world);
+  if(!pointsEqual(result, world.boid.location)){
+    return "testAggregatedAdjustmens [] should have " +
+           "returned {1,1}, not " + pointToString(result);
   }
 
   return true;

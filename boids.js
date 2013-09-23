@@ -1,44 +1,46 @@
 "use strict";
 
 function animateBoids(drawBoidFun, world){
-  //log("animateBoids\n" + worldToString(world));
   if(world.boid == undefined){
     return world.movedBoids;
   }else{
     var movedBoid = moveBoid(world);
-    log("\nmovedBoid\n" + boidToString(movedBoid) + "\n\n");
+    //log("\nmovedBoid\n" + boidToString(movedBoid) + "\n\n");
     drawBoidFun.call(null, movedBoid, world);
 
     var movedWorld = shiftBoids(world, movedBoid);
-    //log("shifted boids");
-    log("moved world\n" + worldToString(movedWorld));
+    //log("moved world\n" + worldToString(movedWorld));
     return animateBoids(drawBoidFun, movedWorld);
   }
 }
 
 function moveBoid(world){
-  var applyMovementFun = function(movementFun){
-                             //log("calling applyMovementFun " +
-                             //    "with " + movementFun.toString().split("(")[0]);
-                             return movementFun.call(null, world);
+  var applyMovementFun = function(movement){
+                             return {'point': movement.fun.call(null, world),
+                                     'scale': movement.scale};
                          };
 
-  //log("movementFun: " + world.movementFuns[0].toString().split("(")[0]);
+  var pointScales = map(applyMovementFun, world.movements);
 
-  var movementPoints = map(applyMovementFun, world.movementFuns);
+  //log("movementPointScales: " + pointScalesToString(pointScales));
 
-  //log("movementPoints.length = " + movementPoints.length);
-  //log("movementPoints[0] = " + movementPoints[0]);
-
-  log("movementPoints: " + pointToString(movementPoints[0]));
-
-  var newPoint = combinePoints(world, movementPoints);
-  //log("newPoint = " + pointToString(newPoint));
+  var newPoint = combineMovements(world, pointScales);
   var movedBoid = copyBoid(world.boid);
-  //log("moveBoid copied boid");
   movedBoid.location = newPoint;
 
   return movedBoid;
+}
+
+function pointScalesToString(pointScales){
+  var reduceFun = function(string, pointScale){
+    return string +
+           pointToString(pointScale.point) +
+           " " +
+           pointScale.scale +
+           ", ";
+  };
+
+  return reduce(reduceFun, pointScales, "");
 }
 
 function shiftBoids(world, movedBoid){
@@ -48,7 +50,6 @@ function shiftBoids(world, movedBoid){
   if(world.boids.length > 0){
     boid = copyBoid(world.boids[0]);
   }
-  //log("shiftBoids: movedBoid: " + pointToString(movedBoid.location));
   movedBoids.push(copyBoid(movedBoid));
   return changeWorldBoids(boid, boids, movedBoids, world);
 }
@@ -60,18 +61,18 @@ function changeWorldBoids(boid, boids, movedBoids, world){
                   world.velocity,
                   world.canvasDimensions,
                   world.range,
-                  world.movementFuns,
+                  world.movements,
                   world.ctx);
 }
 
-function newWorld(boid, boids, movedBoids, velocity, canvasDimensions, range, movementFuns, ctx){
+function newWorld(boid, boids, movedBoids, velocity, canvasDimensions, range, movements, ctx){
   return {'boid': boid,
           'boids': boids,
           'movedBoids': movedBoids,
           'velocity': velocity,
           'canvasDimensions': canvasDimensions,
-          'movementFuns': movementFuns,
           'range': range,
+          'movements': movements,
           'ctx': ctx};
 }
 
@@ -80,27 +81,29 @@ function lastMovedBoid(world){
   return movedBoids[movedBoids.length - 1];
 }
 
-function combinePoints(world, endPoints){
-  //log("combinePoints " + pointToString(endPoints[0]));
+function combineMovements(world, pointScales){
   var startPoint = world.boid.location;
   var velocity = world.velocity;
-  var pointDifferences = pointsRelativeTo(startPoint, endPoints);
-  var totalX = reduce(sum, map(getX, pointDifferences)); 
-  var totalY = reduce(sum, map(getY, pointDifferences)); 
-  //log("totalX: " + totalX + ", totalY: " + totalY);
-  var totalDistance = distance(point(0,0),
-                               {'x': totalX, 'y': totalY});
-  //log("totalDistance: " + totalDistance);
-  var percentPossible = Math.min(1, velocity / totalDistance);
-  //log("% pos: " + percentPossible);
-  var possibleX = Math.round(totalX * percentPossible);
-  var possibleY = Math.round(totalY * percentPossible);
-  //log("returning from combinePoints");
-  return {'x': startPoint.x + possibleX, 'y': startPoint.y + possibleY};
+  var points = scaledRelativePoints(startPoint, pointScales);
+  var totalPoint = reduce(sumPoints, points);
+  var constrainedPoint = constrainDist(totalPoint, velocity);
+  return point(constrainedPoint.x + startPoint.x,
+               constrainedPoint.y + startPoint.y);
+}
+
+function constrainDist(point1, velocity){
+  var dist = distance(point(0, 0), point1);
+  var fractionAllowed = Math.min(velocity, dist) / dist;
+  return point(Math.round(point1.x * fractionAllowed),
+               Math.round(point1.y * fractionAllowed));
+}
+
+function sumPoints(point1, point2){
+  return point(point1.x + point2.x,
+               point1.y + point2.y);
 }
 
 function copyBoid(boid){
-  //log("copyBoid with " + pointToString(boid.location));
   return {'location': boid.location, 'radius': boid.radius};
 }
 

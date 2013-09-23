@@ -4,6 +4,31 @@ function point(x, y){
   return {'x': x, 'y': y};
 }
 
+function newPointScale(point, scale){
+  return {'point': point, 'scale': scale};
+}
+
+function getPointScaleX(pointScale){
+  return pointScale.point.x;
+}
+
+function getScaledX(pointScale){
+  return pointScale.point.x * pointScale.scale;
+}
+
+function getScaledY(pointScale){
+  return pointScale.point.y * pointScale.scale;
+}
+
+function getPointScaleY(pointScale){
+  return pointScale.point.y;
+}
+
+function getPointScaleScale(pointScale){
+  return pointScale.scale;
+}
+
+
 function distance(p1, p2){
   var a = Math.abs(p1.x - p2.x);
   var b = Math.abs(p1.y - p2.y);
@@ -20,11 +45,16 @@ function pointToString(point){
   return "{" + point.x + "," + point.y + "}";
 }
 
-function pointsRelativeTo(referencePoint, absolutePoints){
-  var fun = function(relativePoint){
-    return point(relativePoint.x - referencePoint.x,
-                 relativePoint.y - referencePoint.y);
+function scaledRelativePoints(referencePoint, absolutePointScales){
+  var fun = function(absolutePointScale){
+    var absolutePoint = absolutePointScale.point;
+    var scale = absolutePointScale.scale;
+    var relativeX = absolutePoint.x - referencePoint.x;
+    var relativeY = absolutePoint.y - referencePoint.y;
+    var scaledX = relativeX * absolutePointScale.scale;
+    var scaledY = relativeY * absolutePointScale.scale;
+    return point(scaledX, scaledY);
   }
 
-  return map(fun, absolutePoints);
+  return map(fun, absolutePointScales);
 }
