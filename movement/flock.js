@@ -98,12 +98,14 @@ function aggregateAdjustments(adjustments, world){
   var avgX = Math.round(xs / adjustments.length);
   var avgY = Math.round(ys / adjustments.length);
 
-  var adjustmentDistance = distance(point(0, 0), point(avgX, avgY));
-  if(adjustmentDistance > world.velocity){
-    return proportionateAdjustment(point(avgX, avgY), world.velocity / adjustmentDistance);
-  }else{
-    return point(avgX, avgY);
-  }
+  return point(avgX, avgY);
+
+  //var adjustmentDistance = distance(point(0, 0), point(avgX, avgY));
+  //if(adjustmentDistance > world.velocity){
+    //return proportionateAdjustment(point(avgX, avgY), world.velocity / adjustmentDistance);
+  //}else{
+    //return point(avgX, avgY);
+  //}
 }
 
 function proportionateAdjustment(point, proportion){
