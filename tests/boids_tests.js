@@ -164,12 +164,12 @@ addBoidsTest(function testCombineMovements(){
 
   var result2 = combineMovements(world2, [pointScale1, pointScale3]);
 
-  if(!pointsEqual(point(12, 11.5), result2)){
+  if(!pointsEqual(point(12, 12), result2)){
     return "10,10 should move 4 left but 8 right (for 4 right total) " +
            "and 3 up but 6 down (for 3 down total), which would put it " +
            "at 14,13 except it's constrained by a 2.5 velocity, (where 14,13 " +
            "would be a 5 velocity) which puts it at 12,11.5; however, it was at " +
-           pointToString(result) + " instead.";
+           pointToString(result2) + " instead.";
   }
 
   return true;

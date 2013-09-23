@@ -94,8 +94,8 @@ function combineMovements(world, pointScales){
 function constrainDist(point1, velocity){
   var dist = distance(point(0, 0), point1);
   var fractionAllowed = Math.min(velocity, dist) / dist;
-  return point(point1.x * fractionAllowed,
-               point1.y * fractionAllowed);
+  return point(Math.round(point1.x * fractionAllowed),
+               Math.round(point1.y * fractionAllowed));
 }
 
 function sumPoints(point1, point2){
