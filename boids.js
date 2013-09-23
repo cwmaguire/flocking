@@ -22,13 +22,25 @@ function moveBoid(world){
 
   var pointScales = map(applyMovementFun, world.movements);
 
-  //log("movementPoints: " + pointToString(movementPoints[0]));
+  //log("movementPointScales: " + pointScalesToString(pointScales));
 
   var newPoint = combineMovements(world, pointScales);
   var movedBoid = copyBoid(world.boid);
   movedBoid.location = newPoint;
 
   return movedBoid;
+}
+
+function pointScalesToString(pointScales){
+  var reduceFun = function(string, pointScale){
+    return string +
+           pointToString(pointScale.point) +
+           " " +
+           pointScale.scale +
+           ", ";
+  };
+
+  return reduce(reduceFun, pointScales, "");
 }
 
 function shiftBoids(world, movedBoid){

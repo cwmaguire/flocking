@@ -24,7 +24,7 @@ function testFlockVector(){
                        0,
                        5);
 
-  log("test flockVector");
+  //log("test flockVector");
   var result = flockVector(world);
 
   if(!pointsEqual(point(0,1), result)){

@@ -221,8 +221,8 @@ addBoidsTest(function testAddBoid(){
   if(boids.length != 1 ||
      !pointsEqual(testPoint, boids[0].location) ||
      boids[0].radius != 10){
-    log("location: " + pointToString(boids[0].location));
-    log("radius: " + boids[0].radius);
+    //log("location: " + pointToString(boids[0].location));
+    //log("radius: " + boids[0].radius);
     boids = [];
     return "Single boid should be added with specified point " +
            "and radius should be undefined";
